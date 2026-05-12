@@ -22,11 +22,7 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
         }
     }, [themeColor]);
 
-    if (!themeLoaded) {
-        return null;
-    }
-
-    return <>{children}</>;
+    return themeLoaded ? children : null;
 };
 
 export default ThemeProvider;

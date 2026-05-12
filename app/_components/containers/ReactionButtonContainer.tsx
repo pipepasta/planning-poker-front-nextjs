@@ -42,7 +42,7 @@ const ReactionButtonContainer: React.FC<ReactionButtonContainerProps> = ({
         <div className="max-sm:hidden relative flex flex-col items-center justify-center">
             {/* リアクションボタン */}
             <div
-                className={`absolute -top-16 flex justify-center items-center rounded-full bg-gray-600 px-1 py-1 bg-opacity-30 transition-all duration-200 ease-in-out transform ${isExpanded ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0 pointer-events-none"}`}
+                className={`absolute -top-16 flex justify-center items-center rounded-full bg-zinc-600 px-1 py-1 bg-opacity-30 transition-all duration-200 ease-in-out transform ${isExpanded ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0 pointer-events-none"}`}
             >
                 {standardEmojis.map((emoji: Emoji) => (
                     <ReactionButton
@@ -54,7 +54,7 @@ const ReactionButtonContainer: React.FC<ReactionButtonContainerProps> = ({
                 <button
                     type="button"
                     onClick={() => setShowEmojiPicker(true)}
-                    className="select-none flex items-center justify-center w-12 h-12 m-1 bg-white rounded-full shadow-lg hover:bg-gray-100 border border-gray-300 transition transform active:scale-90"
+                    className="select-none flex items-center justify-center size-12 m-1 bg-white rounded-full shadow-lg hover:bg-zinc-100 border border-zinc-300 transition transform active:scale-90"
                 >
                     <span className="text-xl">
                         <Plus size={20} />
@@ -64,7 +64,7 @@ const ReactionButtonContainer: React.FC<ReactionButtonContainerProps> = ({
 
             <button
                 type="button"
-                className="flex items-center justify-center w-12 h-12 m-1 bg-white rounded-full shadow-lg hover:bg-gray-100 border border-gray-300"
+                className="flex items-center justify-center size-12 m-1 bg-white rounded-full shadow-lg hover:bg-zinc-100 border border-zinc-300"
                 onClick={() => setIsExpanded((prev) => !prev)}
             >
                 {isExpanded ? <X size={20} /> : <Smile size={20} />}
@@ -89,10 +89,10 @@ const ReactionButtonContainer: React.FC<ReactionButtonContainerProps> = ({
                 >
                     <div className="bg-white rounded-lg p-2 w-80">
                         <div className="flex justify-between items-center mb-2">
-                            <h3 className="font-bold">search emojis</h3>
+                            <h3 className="font-semibold">search emojis</h3>
                             <button
                                 type="button"
-                                className="text-gray-500 hover:text-gray-700"
+                                className="text-zinc-500 hover:text-zinc-700"
                                 onClick={() => setShowEmojiPicker(false)}
                             >
                                 <X size={20} />

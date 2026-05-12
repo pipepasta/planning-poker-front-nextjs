@@ -155,7 +155,7 @@ export const themeColors: Record<
 };
 
 // Dark mode theme color definitions
-export const darkThemeColors: Record<
+const darkThemeColors: Record<
     ThemeColor,
     {
         name: string;

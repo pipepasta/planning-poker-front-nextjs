@@ -10,7 +10,7 @@ const DummyNameAndVote = () => (
             <Skeleton className="h-6 w-20" />
         </div>
         <div className="p-2 flex-1 flex justify-center">
-            <Skeleton className="h-6 w-6" />
+            <Skeleton className="size-6" />
         </div>
     </div>
 );

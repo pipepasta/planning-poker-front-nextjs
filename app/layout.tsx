@@ -9,7 +9,7 @@ const siteName = "macaroni poker";
 const description = "online planning poker application";
 const url = "https://macaroni-poker.vercel.app";
 export const metadata: Metadata = {
-    title: siteName,
+    title: { default: siteName, template: `%s | ${siteName}` },
     description: description,
     metadataBase: new URL(url),
     openGraph: {

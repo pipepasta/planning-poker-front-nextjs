@@ -54,7 +54,7 @@ const ThemeSelector = ({ className = "" }: ThemeSelectorProps) => {
                 className="flex items-center justify-center p-2"
                 aria-label="Change theme color"
             >
-                <Palette className="h-5 w-5" />
+                <Palette className="size-5" />
             </Button>
 
             <div
@@ -72,7 +72,7 @@ const ThemeSelector = ({ className = "" }: ThemeSelectorProps) => {
                             handleThemeChange(theme as typeof themeColor)
                         }
                         className={
-                            "w-8 h-8 rounded-full transition-transform duration-300 ring-gray-200 ring-2"
+                            "size-8 rounded-full transition-transform duration-300 ring-zinc-200 ring-2"
                         }
                         style={{
                             backgroundColor: `hsl(${data.variables["--primary"]})`,

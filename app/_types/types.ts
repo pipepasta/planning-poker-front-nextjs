@@ -16,11 +16,6 @@ export const isCountableVote = (vote: Vote): vote is CountableVote =>
 export const isVotableVote = (vote: Vote): vote is VotableVote =>
     allCards.includes(vote);
 
-export const isVote = (maybeVote: string | number): maybeVote is Vote => {
-    const asNumber = Number(maybeVote);
-    return allCards.some((card) => card === asNumber);
-};
-
 export type ReactionType = string;
 
 export type Emoji = { emoji: string; label: string };
