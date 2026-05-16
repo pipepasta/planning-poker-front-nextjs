@@ -47,20 +47,6 @@ const CardTitle = ({
     />
 );
 
-const CardDescription = ({
-    className,
-    ref,
-    ...props
-}: React.HTMLAttributes<HTMLDivElement> & {
-    ref?: React.Ref<HTMLDivElement>;
-}) => (
-    <div
-        ref={ref}
-        className={cn("text-sm text-muted-foreground", className)}
-        {...props}
-    />
-);
-
 const CardContent = ({
     className,
     ref,
@@ -83,11 +69,4 @@ const CardFooter = ({
     />
 );
 
-export {
-    Card,
-    CardHeader,
-    CardFooter,
-    CardTitle,
-    CardDescription,
-    CardContent,
-};
+export { Card, CardHeader, CardFooter, CardTitle, CardContent };

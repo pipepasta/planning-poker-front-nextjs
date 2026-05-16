@@ -12,9 +12,9 @@ const HorizontalLine = (props: Props) => (
             props.className,
         )}
     >
-        <div className="h-1 w-full border-b border-b-gray-300 flex justify-center" />
-        <div className="mx-1 text-gray-400">{props.innerText}</div>
-        <div className="h-1 w-full border-b border-b-gray-300 flex justify-center" />
+        <div className="h-1 w-full border-b border-b-zinc-300 flex justify-center" />
+        <div className="mx-1 text-zinc-400">{props.innerText}</div>
+        <div className="h-1 w-full border-b border-b-zinc-300 flex justify-center" />
     </div>
 );
 

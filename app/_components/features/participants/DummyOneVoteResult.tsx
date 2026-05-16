@@ -12,7 +12,7 @@ interface Props {
 const DummyOneVoteResult = (voteResult: Props) => (
     <div className="flex flex-col justify-center items-center flex-1 m-1">
         <div>{voteResult.title}</div>
-        <Skeleton className="h-8 w-8" />
+        <Skeleton className="size-8" />
     </div>
 );
 

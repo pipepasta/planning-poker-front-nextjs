@@ -51,7 +51,7 @@ const EditNameDialog = (props: Props) => {
                             type="button"
                             onClick={handleSubmit}
                         >
-                            submit
+                            Save name
                         </Button>
                     </DialogClose>
                 </DialogFooter>

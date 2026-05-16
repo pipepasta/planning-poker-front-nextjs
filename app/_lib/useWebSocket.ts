@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { nameNotSet } from "@/app/_lib/atoms";
 import type { Participant, Vote } from "@/app/_types/types";
 import { createClient } from "@/utils/supabase/client";
@@ -130,6 +130,30 @@ const parseWebSocketMessage = (data: unknown): WebSocketMessage | null => {
     return null;
 };
 
+type WsState = {
+    participants: Participant[];
+    connectionState: ConnectionState;
+};
+
+type WsAction =
+    | { type: "connecting" }
+    | { type: "reconnecting" }
+    | { type: "connected" }
+    | { type: "disconnected" }
+    | { type: "setParticipants"; participants: Participant[] };
+
+const wsReducer = (state: WsState, action: WsAction): WsState => {
+    switch (action.type) {
+        case "connecting":
+        case "reconnecting":
+        case "connected":
+        case "disconnected":
+            return { ...state, connectionState: action.type };
+        case "setParticipants":
+            return { ...state, participants: action.participants };
+    }
+};
+
 const useWebSocket = ({
     roomId,
     userName,
@@ -141,9 +165,13 @@ const useWebSocket = ({
     onAllVotesMatch,
 }: Props): UseWebSocket => {
     const socket = useRef<WebSocket | null>(null);
-    const [participants, setParticipants] = useState<Participant[]>([]);
-    const [connectionState, setConnectionState] =
-        useState<ConnectionState>("disconnected");
+    const [{ participants, connectionState }, dispatch] = useReducer(
+        wsReducer,
+        {
+            participants: [],
+            connectionState: "disconnected",
+        },
+    );
     const url = "wss://sjy1ekd1t6.execute-api.ap-northeast-1.amazonaws.com/v1/";
 
     const retryCount = useRef(0);
@@ -263,9 +291,10 @@ const useWebSocket = ({
 
         const connectWithAuth = async () => {
             try {
-                setConnectionState(
-                    retryCount.current > 0 ? "reconnecting" : "connecting",
-                );
+                dispatch({
+                    type:
+                        retryCount.current > 0 ? "reconnecting" : "connecting",
+                });
 
                 // Supabase JWTトークンを取得
                 const supabase = createClient();
@@ -275,7 +304,7 @@ const useWebSocket = ({
 
                 if (error || !data.session?.access_token) {
                     console.error("Failed to get auth token:", error);
-                    setConnectionState("disconnected");
+                    dispatch({ type: "disconnected" });
                     return;
                 }
 
@@ -292,7 +321,7 @@ const useWebSocket = ({
                 const currentSocket = socket.current;
 
                 currentSocket.onopen = () => {
-                    setConnectionState("connected");
+                    dispatch({ type: "connected" });
                     retryCount.current = 0;
                     heartbeatInterval = setInterval(
                         () => socket.current?.send("ping"),
@@ -370,7 +399,7 @@ const useWebSocket = ({
                     ) {
                         callbacksRef.current.onAllVotesMatch();
                     }
-                    setParticipants(participants);
+                    dispatch({ type: "setParticipants", participants });
                 };
 
                 currentSocket.onerror = () => {
@@ -378,7 +407,7 @@ const useWebSocket = ({
                 };
 
                 currentSocket.onclose = () => {
-                    setConnectionState("disconnected");
+                    dispatch({ type: "disconnected" });
                     if (heartbeatInterval) {
                         clearInterval(heartbeatInterval);
                         heartbeatInterval = null;
@@ -398,7 +427,7 @@ const useWebSocket = ({
             } catch (err) {
                 if (!isCancelled) {
                     console.error("WebSocket connection error:", err);
-                    setConnectionState("disconnected");
+                    dispatch({ type: "disconnected" });
                 }
             }
         };

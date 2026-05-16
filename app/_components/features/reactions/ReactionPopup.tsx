@@ -24,7 +24,7 @@ const ReactionPopup: React.FC<ReactionPopupProps> = ({
             }}
         >
             <div className="text-2xl flex items-center">
-                <span className="text-sm text-gray-700 mr-2">{username}</span>
+                <span className="text-sm text-zinc-700 mr-2">{username}</span>
                 <div className="rounded-full bg-white shadow-md px-3 py-2">
                     {emoji}
                 </div>
