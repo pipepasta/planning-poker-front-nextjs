@@ -12,13 +12,19 @@ const ScrumCards = ({ onSelect, selectedCard }: Props) => (
         {allCards.map((it) => (
             <div
                 key={it}
-                className="-ml-9 sm:-ml-8 transition hover:-translate-y-4"
+                className="-ml-9 sm:-ml-8 group cursor-pointer"
+                onClick={() => onSelect(it)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") onSelect(it);
+                }}
             >
-                <ScrumCard
-                    cardSymbol={it}
-                    onSelect={onSelect}
-                    selected={it === selectedCard}
-                />
+                <div className="pointer-events-none transition group-hover:-translate-y-4">
+                    <ScrumCard
+                        cardSymbol={it}
+                        onSelect={onSelect}
+                        selected={it === selectedCard}
+                    />
+                </div>
             </div>
         ))}
     </div>
