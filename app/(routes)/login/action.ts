@@ -5,15 +5,26 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 
+function resolveRedirectTarget(next: string | null): string {
+    if (!next || !next.startsWith("/") || next.startsWith("//")) {
+        return "/";
+    }
+    return next;
+}
+
 export async function loginAnonymously(
     _prevState: { message: string },
     formData: FormData,
 ) {
     const supabase = await createClient();
 
+    const redirectTo = resolveRedirectTarget(
+        formData.get("next") as string | null,
+    );
+
     const { data } = await supabase.auth.getSession();
     if (data.session) {
-        redirect("/");
+        redirect(redirectTo);
     }
 
     const input = {
@@ -30,5 +41,5 @@ export async function loginAnonymously(
     });
 
     revalidatePath("/", "layout");
-    redirect("/");
+    redirect(redirectTo);
 }

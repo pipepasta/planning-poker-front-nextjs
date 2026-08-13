@@ -1,4 +1,5 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import ThemeSelector from "@/app/_components/features/voting/ThemeSelector";
 import { Button } from "@/app/_components/ui/base/Button";
@@ -18,6 +19,8 @@ const LoginClient = () => {
     const [state, formAction, pending] = useActionState(loginAnonymously, {
         message: "",
     });
+    const searchParams = useSearchParams();
+    const next = searchParams.get("next");
 
     return (
         <>
@@ -36,6 +39,9 @@ const LoginClient = () => {
                         </CardTitle>
                     </CardHeader>
                     <form action={formAction}>
+                        {next && (
+                            <input type="hidden" name="next" value={next} />
+                        )}
                         <CardContent>
                             <label
                                 className="m-1 text-xs text-left w-full"
