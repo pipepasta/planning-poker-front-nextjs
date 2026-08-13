@@ -2,7 +2,7 @@
 import { useSetAtom } from "jotai/index";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type KeyboardEventHandler, useEffect, useState } from "react";
+import { type KeyboardEventHandler, useState } from "react";
 import EditNameDialog from "@/app/_components/features/room/EditNameDialog";
 import ThemeSelector from "@/app/_components/features/voting/ThemeSelector";
 import { Button } from "@/app/_components/ui/base/Button";
@@ -17,13 +17,15 @@ import { Input } from "@/app/_components/ui/base/Input";
 import Header from "@/app/_components/ui/layout/Header";
 import HeaderItem from "@/app/_components/ui/layout/HeaderItem";
 import HorizontalLine from "@/app/_components/ui/layout/HorizontalLine";
-import { nameNotSet, userNameAtom } from "@/app/_lib/atoms";
+import { userNameAtom } from "@/app/_lib/atoms";
+import { useSyncUserName } from "@/app/_lib/useSyncUserName";
 import { createClient } from "@/utils/supabase/client";
 
 const HomeClient = () => {
     const { push } = useRouter();
     const [roomId, setRoomId] = useState<string>("");
     const setUserName = useSetAtom(userNameAtom);
+    useSyncUserName();
 
     const isValid = () =>
         !!roomId && !/\s/.test(roomId) && !roomId.includes("/");
@@ -37,15 +39,6 @@ const HomeClient = () => {
     };
 
     const supabase = createClient();
-    useEffect(() => {
-        supabase.auth.getUser().then((user) => {
-            if (user) {
-                setUserName(
-                    user.data.user?.user_metadata.display_name || nameNotSet,
-                );
-            }
-        });
-    }, []);
 
     return (
         <>

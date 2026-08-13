@@ -21,6 +21,7 @@ import HeaderItem from "@/app/_components/ui/layout/HeaderItem";
 import { userNameAtom } from "@/app/_lib/atoms";
 import { useConnectionNotification } from "@/app/_lib/useConnectionNotification";
 import { useReactions } from "@/app/_lib/useReactions";
+import { useSyncUserName } from "@/app/_lib/useSyncUserName";
 import { useTimer } from "@/app/_lib/useTimer";
 import useWebSocket from "@/app/_lib/useWebSocket";
 import type { Vote } from "@/app/_types/types";
@@ -35,6 +36,7 @@ const supabase = createClient();
 const RoomClient = ({ roomId }: RoomClientProps) => {
     const [selectedCardNumber, selectCardNumber] = useState<Vote>("not yet");
     const [userName, setUserName] = useAtom(userNameAtom);
+    useSyncUserName();
 
     // confetti
     const [showConfetti, setShowConfetti] = useState<boolean>(false);
