@@ -1,0 +1,58 @@
+import { Button } from "@/src/components/ui/Button";
+import type { Deck } from "@/src/domain/deck";
+import type { Phase, SnapshotParticipant } from "@/src/protocol/messages";
+import { ResultsPanel } from "./ResultsPanel";
+
+interface Props {
+    phase: Phase;
+    deck: Deck;
+    participants: SnapshotParticipant[];
+    onReveal: () => void;
+    onNextRound: () => void;
+}
+
+export const CenterPanel = ({
+    phase,
+    deck,
+    participants,
+    onReveal,
+    onNextRound,
+}: Props) => {
+    const voted = participants.filter((p) => p.hasVoted).length;
+    const total = participants.length;
+    return (
+        <div className="flex flex-col items-center gap-3 rounded-card border-2 border-ink bg-cream px-5 py-4 shadow-hard-lg">
+            {phase === "voting" ? (
+                <>
+                    <span className="font-display text-lg font-bold">
+                        {voted} / {total} voted
+                    </span>
+                    <div className="flex gap-1" aria-hidden="true">
+                        {participants.map((p) => (
+                            <span
+                                key={p.clientId}
+                                className={
+                                    p.hasVoted
+                                        ? "size-2.5 rounded-full bg-ink"
+                                        : "size-2.5 rounded-full border-2 border-ink"
+                                }
+                            />
+                        ))}
+                    </div>
+                    <Button
+                        variant="secondary"
+                        onClick={onReveal}
+                        disabled={total === 0}
+                    >
+                        Reveal cards
+                    </Button>
+                </>
+            ) : (
+                <>
+                    <ResultsPanel deck={deck} participants={participants} />
+                    <Button onClick={onNextRound}>Next round</Button>
+                </>
+            )}
+        </div>
+    );
+};
