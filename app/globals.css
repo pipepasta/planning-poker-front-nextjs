@@ -1,1 +1,131 @@
 @import "tailwindcss";
+
+@theme {
+    --color-ink: #3b2a14;
+    --color-ink-soft: #6b5638;
+    --color-cream: #fff7e1;
+    --color-cream-deep: #f6e9c6;
+    --color-macaroni: #f5b82e;
+    --color-macaroni-deep: #d99a12;
+    --color-danger: #d1495b;
+    --color-success: #3e8e5a;
+    --font-display: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
+    --font-body: var(--font-nunito), "Nunito", system-ui, sans-serif;
+    --shadow-hard: 4px 4px 0 0 var(--color-ink);
+    --shadow-hard-sm: 2px 2px 0 0 var(--color-ink);
+    --shadow-hard-lg: 6px 6px 0 0 var(--color-ink);
+    --radius-card: 14px;
+}
+
+@theme inline {
+    --color-cloth: hsl(var(--cloth-h) 55% 88%);
+    --color-cloth-deep: hsl(var(--cloth-h) 50% 74%);
+    --color-cloth-ink: hsl(var(--cloth-h) 45% 28%);
+    --color-felt: hsl(var(--cloth-h) 40% 62%);
+}
+
+:root {
+    --cloth-h: 340;
+}
+[data-theme="pink"] {
+    --cloth-h: 340;
+}
+[data-theme="blue"] {
+    --cloth-h: 210;
+}
+[data-theme="green"] {
+    --cloth-h: 140;
+}
+[data-theme="purple"] {
+    --cloth-h: 275;
+}
+[data-theme="orange"] {
+    --cloth-h: 30;
+}
+
+@layer base {
+    html {
+        color-scheme: light;
+    }
+    body {
+        background-color: var(--color-cloth);
+        color: var(--color-ink);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        background-image: radial-gradient(
+            circle at 1px 1px,
+            color-mix(in srgb, var(--color-ink) 8%, transparent) 1px,
+            transparent 0
+        );
+        background-size: 18px 18px;
+    }
+    button {
+        cursor: pointer;
+    }
+}
+
+@layer utilities {
+    .pressable {
+        transition-property: transform;
+        transition-duration: 100ms;
+    }
+    .pressable:active {
+        transform: translate(2px, 2px);
+        box-shadow: var(--shadow-hard-sm);
+    }
+    .flip {
+        transform-style: preserve-3d;
+        transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .flip.is-flipped {
+        transform: rotateY(180deg);
+    }
+    .face {
+        backface-visibility: hidden;
+    }
+    .face-back {
+        transform: rotateY(180deg);
+    }
+    @keyframes float-up {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, 0) scale(0.6);
+        }
+        15% {
+            opacity: 1;
+            transform: translate(-50%, -20px) scale(1.05);
+        }
+        80% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -140px) scale(1);
+        }
+    }
+    .float-up {
+        animation: float-up 2.5s ease-out forwards;
+    }
+    @keyframes pop-in {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    .pop-in {
+        animation: pop-in 250ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .flip,
+        .float-up,
+        .pop-in,
+        .pressable {
+            animation: none;
+            transition: none;
+        }
+    }
+}
