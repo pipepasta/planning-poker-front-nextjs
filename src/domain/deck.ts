@@ -1,3 +1,7 @@
+// PARITY: this file must stay byte-for-byte equivalent to the server's copy at
+// planning-poker-server/cdk/src/domain/deck.ts. The server validates submitted
+// cards against these decks, so a one-sided edit silently rejects votes.
+// tests/domain/deck.test.ts pins the card arrays; the server has the same test.
 export type DeckId = "fibonacci" | "tshirt";
 
 export interface Deck {

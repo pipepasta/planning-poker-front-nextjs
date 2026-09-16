@@ -7,13 +7,7 @@ import { Button } from "@/src/components/ui/Button";
 import { Input } from "@/src/components/ui/Input";
 import { Panel } from "@/src/components/ui/Panel";
 import { useSession } from "@/src/lib/session";
-
-export const ROOM_ID_MAX = 12;
-export const isValidRoomId = (v: string) =>
-    v.length >= 1 &&
-    v.length <= ROOM_ID_MAX &&
-    !/\s/.test(v) &&
-    !v.includes("/");
+import { isValidRoomId, ROOM_ID_MAX } from "@/src/protocol/messages";
 
 export const HomeScreen = () => {
     const router = useRouter();

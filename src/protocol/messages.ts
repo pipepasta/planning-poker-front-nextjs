@@ -5,6 +5,17 @@ export const WS_URL =
     process.env.NEXT_PUBLIC_WS_URL ??
     "wss://sjy1ekd1t6.execute-api.ap-northeast-1.amazonaws.com/v1/";
 
+// Client-side validation limits. These mirror the server's own validation in
+// planning-poker-server/cdk/src/protocol — keep both sides in step.
+export const ROOM_ID_MAX = 12;
+export const NAME_MAX = 15;
+
+export const isValidRoomId = (value: string): boolean =>
+    value.length >= 1 &&
+    value.length <= ROOM_ID_MAX &&
+    !/\s/.test(value) &&
+    !value.includes("/");
+
 export type TimerActionName = "resetTimer" | "pauseTimer" | "resumeTimer";
 export type Phase = "voting" | "revealed";
 

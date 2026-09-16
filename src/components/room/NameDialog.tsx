@@ -8,8 +8,7 @@ import {
     DialogTrigger,
 } from "@/src/components/ui/Dialog";
 import { Input } from "@/src/components/ui/Input";
-
-export const NAME_MAX = 15;
+import { NAME_MAX } from "@/src/protocol/messages";
 
 export const NameDialog = ({
     name,

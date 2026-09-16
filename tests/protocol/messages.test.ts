@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { parseServerMessage } from "@/src/protocol/messages";
+import {
+    isValidRoomId,
+    NAME_MAX,
+    parseServerMessage,
+    ROOM_ID_MAX,
+} from "@/src/protocol/messages";
 
 const snapshot = {
     type: "room",
@@ -54,5 +59,25 @@ describe("parseServerMessage", () => {
         expect(
             parseServerMessage({ type: "reaction", emoji: "👍" }),
         ).toBeNull();
+    });
+});
+
+describe("isValidRoomId", () => {
+    it("accepts a plain short id", () => {
+        expect(isValidRoomId("abc")).toBe(true);
+        expect(isValidRoomId("a".repeat(ROOM_ID_MAX))).toBe(true);
+    });
+
+    it("rejects empty, over-long, spaced and slashed ids", () => {
+        expect(isValidRoomId("")).toBe(false);
+        expect(isValidRoomId("a".repeat(ROOM_ID_MAX + 1))).toBe(false);
+        expect(isValidRoomId("a b")).toBe(false);
+        expect(isValidRoomId("a\tb")).toBe(false);
+        expect(isValidRoomId("a/b")).toBe(false);
+    });
+
+    it("pins the limits shared with the server", () => {
+        expect(ROOM_ID_MAX).toBe(12);
+        expect(NAME_MAX).toBe(15);
     });
 });
