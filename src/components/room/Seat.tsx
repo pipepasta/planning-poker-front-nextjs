@@ -21,7 +21,7 @@ export const Seat = ({
     style,
     className,
 }: Props) => {
-    const flipped = revealed && participant.vote !== undefined;
+    const flipped = revealed && typeof participant.vote === "string";
     const face = participant.vote == null ? "?" : cardLabel(participant.vote);
     return (
         <div
