@@ -35,6 +35,8 @@ interface Options {
         emoji: string,
         from: { clientId: string; name: string },
     ) => void;
+    /** Injection seam for tests; defaults to the real WebSocket. */
+    createSocket?: (url: string) => WebSocket;
 }
 
 export const useRoomConnection = ({
@@ -43,6 +45,7 @@ export const useRoomConnection = ({
     name,
     getToken,
     onReaction,
+    createSocket = (url) => new WebSocket(url),
 }: Options): { state: RoomState; actions: RoomActions } => {
     const [state, dispatch] = useReducer(
         roomReducer,
@@ -53,10 +56,15 @@ export const useRoomConnection = ({
     const nameRef = useRef(name);
     const onReactionRef = useRef(onReaction);
     const prevDeckRef = useRef<DeckId | null>(null);
+    const createSocketRef = useRef(createSocket);
 
     useEffect(() => {
         nameRef.current = name;
     }, [name]);
+
+    useEffect(() => {
+        createSocketRef.current = createSocket;
+    }, [createSocket]);
 
     useEffect(() => {
         onReactionRef.current = onReaction;
@@ -83,15 +91,29 @@ export const useRoomConnection = ({
             reconnectTimer = null;
         };
 
+        // Schedule another attempt, or give up once the budget is spent.
+        // Shared by the missing-token path and by onclose so a transient
+        // token failure cannot end the reconnect loop on attempt 0.
+        const scheduleRetry = () => {
+            if (cancelled) return;
+            if (attempt >= MAX_ATTEMPTS) {
+                dispatch({ type: "failed" });
+                return;
+            }
+            dispatch({ type: "reconnecting" });
+            reconnectTimer = setTimeout(connect, backoffDelay(attempt));
+            attempt += 1;
+        };
+
         const connect = async () => {
             dispatch({ type: attempt > 0 ? "reconnecting" : "connecting" });
             const token = await getToken();
             if (cancelled) return;
             if (!token) {
-                dispatch({ type: "failed" });
+                scheduleRetry();
                 return;
             }
-            const socket = new WebSocket(
+            const socket = createSocketRef.current(
                 `${WS_URL}?token=${encodeURIComponent(token)}`,
             );
             socketRef.current = socket;
@@ -142,14 +164,7 @@ export const useRoomConnection = ({
             socket.onclose = () => {
                 if (pingTimer) clearInterval(pingTimer);
                 pingTimer = null;
-                if (cancelled) return;
-                if (attempt >= MAX_ATTEMPTS) {
-                    dispatch({ type: "failed" });
-                    return;
-                }
-                dispatch({ type: "reconnecting" });
-                reconnectTimer = setTimeout(connect, backoffDelay(attempt));
-                attempt += 1;
+                scheduleRetry();
             };
         };
 
