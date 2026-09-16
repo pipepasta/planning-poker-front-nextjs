@@ -15,7 +15,7 @@ export const Hand = ({ deck, selected, onSelect, disabled }: Props) => {
         <div
             role="group"
             aria-label="Your hand"
-            className="flex items-end justify-center overflow-x-auto px-6 pb-4 pt-10"
+            className="flex w-full min-w-0 items-end justify-center overflow-x-auto px-6 pb-4 pt-10"
         >
             {cards.map((card, i) => (
                 <HandCard
