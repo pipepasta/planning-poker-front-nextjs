@@ -1,8 +1,11 @@
 "use client";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Panel } from "@/src/components/ui/Panel";
 import { Skeleton } from "@/src/components/ui/Skeleton";
-import { DECKS } from "@/src/domain/deck";
+import { DECKS, DEFAULT_DECK_ID } from "@/src/domain/deck";
 import { summarize } from "@/src/domain/results";
 import { useSession } from "@/src/lib/session";
 import { useReactions } from "@/src/room/useReactions";
@@ -27,6 +30,25 @@ const useWindowSize = () => {
     }, []);
     return size;
 };
+
+const SignedOut = ({ next }: { next: string }) => (
+    <main className="flex min-h-dvh items-center justify-center p-4">
+        <Panel className="flex w-full max-w-sm flex-col items-start gap-3 p-6">
+            <h1 className="font-display text-2xl font-extrabold">
+                You are signed out
+            </h1>
+            <p className="text-sm font-bold text-ink-soft">
+                Sign in again to take a seat at this table.
+            </p>
+            <Link
+                href={`/login?next=${encodeURIComponent(next)}`}
+                className="rounded-xl border-2 border-ink bg-macaroni px-4 py-2 font-display font-bold text-ink shadow-hard"
+            >
+                Go to sign in
+            </Link>
+        </Panel>
+    </main>
+);
 
 const RoomSkeleton = () => (
     <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 p-6">
@@ -59,7 +81,7 @@ const ConnectedRoom = ({
     });
     const { width, height } = useWindowSize();
     const room = state.room;
-    const deck = DECKS[room?.deckId ?? "fibonacci"];
+    const deck = DECKS[room?.deckId ?? DEFAULT_DECK_ID];
     const revealed = room?.phase === "revealed";
     const consensus =
         !!room &&
@@ -131,8 +153,12 @@ const ConnectedRoom = ({
 
 export const RoomScreen = ({ roomId }: { roomId: string }) => {
     const session = useSession();
-    if (session.status === "loading" || !session.userId)
-        return <RoomSkeleton />;
+    const pathname = usePathname();
+    if (session.status === "loading") return <RoomSkeleton />;
+    // Session resolved but nobody is signed in: an endless skeleton looks like
+    // a hang, so point at the login page instead.
+    if (!session.userId)
+        return <SignedOut next={pathname ?? `/rooms/${roomId}`} />;
     return (
         <ConnectedRoom
             roomId={roomId}

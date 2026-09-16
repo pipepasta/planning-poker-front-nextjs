@@ -10,4 +10,11 @@ export const THEMES: Array<{ id: ThemeId; label: string; hue: number }> = [
     { id: "orange", label: "Orange", hue: 30 },
 ];
 
-export const themeAtom = atomWithStorage<ThemeId>("mp.theme", "pink");
+export const themeAtom = atomWithStorage<ThemeId>(
+    "mp.theme",
+    "pink",
+    undefined,
+    {
+        getOnInit: true,
+    },
+);

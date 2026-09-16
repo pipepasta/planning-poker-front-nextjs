@@ -8,6 +8,9 @@ export const useTimerDisplay = (
 ): string => {
     const [now, setNow] = useState(() => Date.now());
     useEffect(() => {
+        // Repaint at once so a paused -> running flip shows the right value
+        // without waiting up to a second for the first tick.
+        setNow(Date.now());
         if (timer?.status !== "running") return;
         const id = setInterval(() => setNow(Date.now()), 1000);
         return () => clearInterval(id);

@@ -6,7 +6,13 @@ import { toast } from "@/src/lib/toast";
 export const CopyLink = ({ roomId }: { roomId: string }) => {
     const [copied, setCopied] = useState(false);
     const copy = async () => {
-        await navigator.clipboard.writeText(window.location.href);
+        // Denied permission, an insecure origin, or no Clipboard API at all.
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+        } catch {
+            toast("Could not copy the link", "error");
+            return;
+        }
         setCopied(true);
         toast("Link copied", "success");
         setTimeout(() => setCopied(false), 2000);

@@ -12,8 +12,8 @@ export const ReactionBar = ({
 }) => {
     const [open, setOpen] = useState(false);
     return (
-        // biome-ignore lint/a11y/useAriaPropsSupportedByRole: labels the reaction toolbar for assistive tech; no role change needed
         <div
+            role="toolbar"
             aria-label="Reactions"
             className="flex items-center gap-1 rounded-full border-2 border-ink bg-cream px-2 py-1 shadow-hard"
         >
