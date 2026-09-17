@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Panel } from "@/src/components/ui/Panel";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { DECKS, DEFAULT_DECK_ID } from "@/src/domain/deck";
@@ -18,6 +18,19 @@ import { RoomHeader } from "./RoomHeader";
 import { Table } from "./Table";
 
 const Confetti = dynamic(() => import("react-confetti"), { ssr: false });
+
+const reduceMotionQuery = "(prefers-reduced-motion: reduce)";
+const subscribeReduceMotion = (cb: () => void) => {
+    const mq = window.matchMedia(reduceMotionQuery);
+    mq.addEventListener("change", cb);
+    return () => mq.removeEventListener("change", cb);
+};
+const usePrefersReducedMotion = () =>
+    useSyncExternalStore(
+        subscribeReduceMotion,
+        () => window.matchMedia(reduceMotionQuery).matches,
+        () => false,
+    );
 
 const useWindowSize = () => {
     const [size, setSize] = useState({ width: 0, height: 0 });
@@ -51,10 +64,16 @@ const SignedOut = ({ next }: { next: string }) => (
 );
 
 const RoomSkeleton = () => (
-    <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 p-6">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="aspect-[16/10] w-full rounded-[50%]" />
-        <Skeleton className="h-28 w-2/3" />
+    <div className="mx-auto flex h-full w-full min-h-0 max-w-4xl flex-1 flex-col items-center gap-4">
+        <Skeleton className="h-10 w-full shrink-0" />
+        <Skeleton className="w-full min-h-0 flex-1 rounded-[50%]" />
+        <Skeleton className="h-20 w-2/3 shrink-0" />
+    </div>
+);
+
+const LoadingRoom = () => (
+    <div className="flex h-dvh flex-col overflow-hidden p-6">
+        <RoomSkeleton />
     </div>
 );
 
@@ -80,6 +99,7 @@ const ConnectedRoom = ({
         onReaction: push,
     });
     const { width, height } = useWindowSize();
+    const reduceMotion = usePrefersReducedMotion();
     const room = state.room;
     const deck = DECKS[room?.deckId ?? DEFAULT_DECK_ID];
     const revealed = room?.phase === "revealed";
@@ -100,8 +120,10 @@ const ConnectedRoom = ({
     }, [consensus]);
 
     return (
-        <div className="flex min-h-dvh flex-col">
-            {celebrate && (
+        // A fixed-height, non-scrolling column: the table gives up space so
+        // the hand at the bottom is always fully visible.
+        <div className="flex h-dvh flex-col overflow-hidden">
+            {celebrate && !reduceMotion && (
                 <Confetti
                     width={width}
                     height={height}
@@ -120,25 +142,27 @@ const ConnectedRoom = ({
                 onDeck={actions.changeDeck}
             />
             <ConnectionBanner status={state.connection} />
-            <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center gap-2 px-3 py-4">
-                {room ? (
-                    <Table
-                        participants={room.participants}
-                        revealed={revealed}
-                        myClientId={userId}
-                        reactions={reactions}
-                    >
-                        <CenterPanel
-                            phase={room.phase}
-                            deck={deck}
+            <main className="mx-auto flex w-full min-h-0 max-w-6xl flex-1 flex-col items-center gap-2 px-3 py-3">
+                <div className="flex w-full min-h-0 flex-1 flex-col">
+                    {room ? (
+                        <Table
                             participants={room.participants}
-                            onReveal={actions.reveal}
-                            onNextRound={actions.nextRound}
-                        />
-                    </Table>
-                ) : (
-                    <RoomSkeleton />
-                )}
+                            revealed={revealed}
+                            myClientId={userId}
+                            reactions={reactions}
+                        >
+                            <CenterPanel
+                                phase={room.phase}
+                                deck={deck}
+                                participants={room.participants}
+                                onReveal={actions.reveal}
+                                onNextRound={actions.nextRound}
+                            />
+                        </Table>
+                    ) : (
+                        <RoomSkeleton />
+                    )}
+                </div>
                 <ReactionBar onReact={actions.react} />
                 <Hand
                     deck={deck}
@@ -154,7 +178,7 @@ const ConnectedRoom = ({
 export const RoomScreen = ({ roomId }: { roomId: string }) => {
     const session = useSession();
     const pathname = usePathname();
-    if (session.status === "loading") return <RoomSkeleton />;
+    if (session.status === "loading") return <LoadingRoom />;
     // Session resolved but nobody is signed in: an endless skeleton looks like
     // a hang, so point at the login page instead.
     if (!session.userId)

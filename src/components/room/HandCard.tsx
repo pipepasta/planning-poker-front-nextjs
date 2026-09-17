@@ -10,6 +10,14 @@ interface Props {
     disabled?: boolean;
 }
 
+// Fan geometry. The caps keep a long deck from arcing past the row's padding:
+// at 18deg a 80x112 card overhangs ~10px at the top, plus 14px of lift and
+// 16px when selected, which fits the row's pt-10.
+const MAX_TILT = 18;
+const MAX_LIFT = 14;
+const clamp = (n: number, limit: number) =>
+    Math.max(-limit, Math.min(limit, n));
+
 export const HandCard = ({
     card,
     selected,
@@ -19,8 +27,9 @@ export const HandCard = ({
     disabled,
 }: Props) => {
     const mid = (total - 1) / 2;
-    const rotate = (index - mid) * 4;
-    const lift = Math.abs(index - mid) * 3;
+    const rotate = clamp((index - mid) * 3, MAX_TILT);
+    // Negative: the outer cards ride up, the way a fan of held cards does.
+    const lift = -Math.min(Math.abs(index - mid) * 2, MAX_LIFT);
     return (
         <button
             type="button"
@@ -31,9 +40,9 @@ export const HandCard = ({
             style={{ transform: `rotate(${rotate}deg) translateY(${lift}px)` }}
             className={cn(
                 "group relative -ml-5 first:ml-0 h-24 w-16 shrink-0 rounded-xl border-2 border-ink font-display text-ink transition-transform duration-150 sm:h-28 sm:w-20",
-                "hover:-translate-y-3 hover:z-10 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
+                "hover:-translate-y-2 hover:z-10 focus-visible:z-10",
                 selected
-                    ? "z-20 -translate-y-6 bg-macaroni shadow-hard-lg"
+                    ? "z-20 -translate-y-4 bg-macaroni shadow-hard-lg"
                     : "bg-cream shadow-hard",
                 disabled && "opacity-60",
             )}

@@ -15,7 +15,7 @@ export const ReactionBar = ({
         <div
             role="toolbar"
             aria-label="Reactions"
-            className="flex items-center gap-1 rounded-full border-2 border-ink bg-cream px-2 py-1 shadow-hard"
+            className="flex shrink-0 items-center gap-1 rounded-full border-2 border-ink bg-cream px-2 py-1 shadow-hard"
         >
             {STANDARD_EMOJIS.map((e) => (
                 <button

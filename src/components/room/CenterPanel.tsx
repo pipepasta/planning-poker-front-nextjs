@@ -21,7 +21,7 @@ export const CenterPanel = ({
     const voted = participants.filter((p) => p.hasVoted).length;
     const total = participants.length;
     return (
-        <div className="flex flex-col items-center gap-3 rounded-card border-2 border-ink bg-cream px-5 py-4 shadow-hard-lg">
+        <div className="flex max-w-[76%] flex-col items-center gap-2 rounded-card border-2 border-ink bg-cream px-3 py-3 text-sm shadow-hard-lg sm:max-w-none sm:gap-3 sm:px-5 sm:py-4 sm:text-base">
             {phase === "voting" ? (
                 <>
                     <span className="font-display text-lg font-bold">
