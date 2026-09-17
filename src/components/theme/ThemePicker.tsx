@@ -2,17 +2,7 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
-import { THEMES, type ThemeId, themeAtom } from "@/src/lib/prefs";
-
-// Each swatch shows the theme's own --primary. The hues match the ones
-// globals.css feeds into the token formulas.
-const SWATCH_HUE: Record<ThemeId, number> = {
-    pink: 330,
-    blue: 210,
-    green: 120,
-    purple: 270,
-    orange: 30,
-};
+import { THEMES, themeAtom } from "@/src/lib/prefs";
 
 export const ThemePicker = () => {
     const [theme, setTheme] = useAtom(themeAtom);
@@ -43,7 +33,7 @@ export const ThemePicker = () => {
                             "ring-2 ring-ring ring-offset-2 ring-offset-background",
                     )}
                     style={{
-                        backgroundColor: `hsl(${SWATCH_HUE[t.id]} 100% 90%)`,
+                        backgroundColor: `hsl(${t.hue} 100% 90%)`,
                     }}
                 />
             ))}
