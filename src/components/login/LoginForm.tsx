@@ -14,9 +14,11 @@ export const LoginForm = () => {
     const next = useSearchParams().get("next");
     return (
         <Panel className="w-full max-w-sm p-6">
-            <h1 className="mb-1 text-center text-2xl font-semibold">Sign In</h1>
+            <h1 className="mb-1 text-center text-2xl font-semibold">
+                macaroni poker
+            </h1>
             <p className="mb-5 text-center text-sm text-muted-foreground">
-                Choose a nickname to get started.
+                Pick a nickname and pull up a chair.
             </p>
             <form action={action} className="flex flex-col gap-2">
                 {next && <input type="hidden" name="next" value={next} />}
@@ -43,7 +45,7 @@ export const LoginForm = () => {
                     disabled={pending}
                     className="mt-3 w-full"
                 >
-                    Sign in
+                    Join the table
                 </Button>
             </form>
         </Panel>

@@ -34,7 +34,7 @@ export const HomeScreen = () => {
             <main className="flex flex-1 items-center justify-center p-4">
                 <Panel className="w-full max-w-sm p-6">
                     <h1 className="mb-5 text-center text-2xl font-semibold">
-                        Join room
+                        Join a table
                     </h1>
                     <form
                         className="flex gap-3"
@@ -65,7 +65,7 @@ export const HomeScreen = () => {
                         className="w-full"
                         onClick={() => enter(crypto.randomUUID().slice(0, 8))}
                     >
-                        Create new room
+                        Deal a new table
                     </Button>
                 </Panel>
             </main>

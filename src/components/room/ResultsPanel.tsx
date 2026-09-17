@@ -19,7 +19,10 @@ const Stat = ({
     pending: boolean;
 }) => (
     <div className="flex flex-1 flex-col items-center gap-0.5 px-1">
-        <span className="text-sm text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            {label}
+        </span>
+        {/* Both branches are h-8 so the row never changes height on reveal. */}
         {pending ? (
             <span className="flex h-8 items-center">
                 <Spinner />
@@ -39,27 +42,28 @@ export const ResultsPanel = ({ deck, participants, revealed }: Props) => {
     );
     return (
         <div className="flex w-full flex-col items-center gap-2">
-            {revealed && s.consensus && (
-                <span className="pop-in rounded-full bg-primary px-3 py-0.5 text-sm font-semibold text-primary-foreground shadow-sm">
-                    Consensus!
-                </span>
-            )}
+            {/* A permanently reserved slot: only the pill inside it appears and
+                disappears, so reaching consensus never moves the page. Kept in
+                flow (not absolute) so assistive tech still reads it in place. */}
+            <div className="flex h-7 items-center justify-center">
+                {revealed && s.consensus && (
+                    <span className="pop-in rounded-full bg-primary px-3 py-0.5 text-sm font-semibold text-primary-foreground shadow-sm">
+                        Consensus!
+                    </span>
+                )}
+            </div>
             <div className="flex w-full max-w-3xl items-start">
                 <Stat
-                    label="average"
+                    label="Average"
                     value={s.average ?? "-"}
                     pending={!revealed}
                 />
                 <Stat
-                    label="mode"
+                    label="Mode"
                     value={s.mode.length ? s.mode.join(", ") : "-"}
                     pending={!revealed}
                 />
-                <Stat
-                    label="scrum decision"
-                    value={s.decision}
-                    pending={!revealed}
-                />
+                <Stat label="Decision" value={s.decision} pending={!revealed} />
             </div>
         </div>
     );

@@ -171,14 +171,14 @@ const ConnectedRoom = ({
                                     className="w-40"
                                     onClick={actions.reveal}
                                 >
-                                    Reveal
+                                    Reveal cards
                                 </Button>
                                 <Button
                                     size="lg"
                                     className="w-40"
                                     onClick={actions.nextRound}
                                 >
-                                    Next Vote
+                                    Next round
                                 </Button>
                             </div>
                         </>
