@@ -121,8 +121,10 @@ const ConnectedRoom = ({
 
     return (
         // A fixed-height, non-scrolling column: the table gives up space so
-        // the hand at the bottom is always fully visible.
-        <div className="flex h-dvh flex-col overflow-hidden">
+        // the hand at the bottom is always fully visible. Under 600px tall
+        // the table would have to shrink past its own seat ring, so the shell
+        // stops clipping and the page scrolls instead.
+        <div className="flex h-dvh flex-col overflow-hidden [@media(max-height:599px)]:h-auto [@media(max-height:599px)]:min-h-dvh [@media(max-height:599px)]:overflow-visible">
             {celebrate && !reduceMotion && (
                 <Confetti
                     width={width}
@@ -143,7 +145,10 @@ const ConnectedRoom = ({
             />
             <ConnectionBanner status={state.connection} />
             <main className="mx-auto flex w-full min-h-0 max-w-6xl flex-1 flex-col items-center gap-2 px-3 py-3">
-                <div className="flex w-full min-h-0 flex-1 flex-col">
+                {/* The seat ring sits at 16%/84% of this box and each seat is
+                    ~110px tall, so under ~344px it clips; give it a floor and
+                    let the (now scrolling) page absorb the overflow. */}
+                <div className="flex w-full min-h-0 flex-1 flex-col [@media(max-height:599px)]:min-h-[360px]">
                     {room ? (
                         <Table
                             participants={room.participants}
