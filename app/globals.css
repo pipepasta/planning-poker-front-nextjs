@@ -141,8 +141,8 @@
     .face-back {
         transform: rotateY(180deg);
     }
-    /* --float-dx / --float-dy are set per reaction so simultaneous reactions
-       drift apart instead of stacking on one point. */
+    /* Each reaction is placed at its own random point by the component; this
+       only carries it upward. --float-dy is how far it travels. */
     @keyframes float-up {
         0% {
             opacity: 0;
@@ -157,11 +157,7 @@
         }
         100% {
             opacity: 0;
-            transform: translate(
-                    calc(-50% + var(--float-dx, 0px)),
-                    var(--float-dy, -120px)
-                )
-                scale(1);
+            transform: translate(-50%, var(--float-dy, -120px)) scale(1);
         }
     }
     .float-up {

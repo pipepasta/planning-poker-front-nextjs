@@ -12,13 +12,13 @@ interface Props {
     reactions: FloatingReaction[];
 }
 
-// No seat geometry any more: reactions just fan out by sender index so several
-// at once do not stack on one point, and drift up out of the panel.
-const floatStyle = (index: number): CSSProperties =>
+// No seat geometry any more: each reaction carries its own random offset from
+// useReactions, in percentages of this panel, and drifts up out of it.
+const LAUNCH_TOP = 72;
+const floatStyle = (r: FloatingReaction): CSSProperties =>
     ({
-        left: `${12 + (index % 6) * 14}%`,
-        top: "72%",
-        "--float-dx": `${((index % 3) - 1) * 24}px`,
+        left: `${r.x}%`,
+        top: `${LAUNCH_TOP + r.y}%`,
         "--float-dy": "-180px",
     }) as CSSProperties;
 
@@ -55,18 +55,9 @@ export const ParticipantsPanel = ({
                     ))}
                 </div>
             )}
-            {reactions.map((r) => {
-                const i = participants.findIndex(
-                    (p) => p.clientId === r.from.clientId,
-                );
-                return (
-                    <ReactionFloat
-                        key={r.id}
-                        reaction={r}
-                        style={floatStyle(i < 0 ? 0 : i)}
-                    />
-                );
-            })}
+            {reactions.map((r) => (
+                <ReactionFloat key={r.id} reaction={r} style={floatStyle(r)} />
+            ))}
         </Panel>
     );
 };
