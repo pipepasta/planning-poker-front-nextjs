@@ -27,6 +27,8 @@
     --color-border: hsl(var(--border));
     --color-input: hsl(var(--input));
     --color-ring: hsl(var(--ring));
+    --color-header: hsl(var(--header));
+    --color-header-foreground: hsl(var(--header-foreground));
 }
 
 @theme {
@@ -67,6 +69,12 @@
     /* The old ring was a 60% grey: about 2.6:1 on white, under the 3:1 a
        focus indicator needs. Themed and darkened instead. */
     --ring: var(--theme-h) 60% 45%;
+
+    /* The chrome bar. A deep, low-saturation cut of the same hue: it puts a
+       real value step between the chrome and the white panels under it, and
+       it is the one surface where the theme colour shows at strength. */
+    --header: var(--theme-h) 25% 20%;
+    --header-foreground: var(--theme-h) 15% 97%;
 }
 
 [data-theme="pink"] {
@@ -111,6 +119,23 @@
     }
     button {
         cursor: pointer;
+    }
+    /* Everything sitting on the dark chrome bar keeps reading the ordinary
+       tokens; only their values change inside it. Custom properties inherit
+       regardless of layer, so this needs no specificity fight with the
+       utilities and no component needs a dark-specific variant. --primary is
+       deliberately left alone, so a selected segment stays pastel. */
+    .header-chrome {
+        --background: var(--header);
+        --foreground: var(--header-foreground);
+        --card: var(--theme-h) 22% 26%;
+        --card-foreground: var(--header-foreground);
+        --muted-foreground: var(--theme-h) 15% 78%;
+        --accent: var(--theme-h) 20% 32%;
+        --accent-foreground: 0 0% 98%;
+        --border: var(--theme-h) 15% 45%;
+        --input: var(--theme-h) 15% 45%;
+        --ring: var(--theme-h) 60% 80%;
     }
     /* One focus ring for the whole app, never the UA blue. Zero specificity,
        so a component can still opt out. */
