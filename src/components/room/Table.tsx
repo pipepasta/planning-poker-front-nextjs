@@ -83,7 +83,10 @@ export const Table = ({
     ));
 
     return (
-        <div className="flex h-full min-h-0 w-full flex-col items-center gap-2 sm:gap-3">
+        // `flex-1`, not `h-full`: on a short viewport the parent has only a
+        // min-height, and `height: 100%` against an indefinite height collapses
+        // to zero and takes the whole table with it.
+        <div className="flex min-h-0 w-full flex-1 flex-col items-center gap-2 sm:gap-3">
             {!wide && (
                 // One scrolling row keeps the seats to a fixed height however
                 // many people are in the room, so the hand below never moves.
