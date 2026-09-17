@@ -30,6 +30,9 @@ export const HandCard = ({
     const rotate = clamp((index - mid) * 3, MAX_TILT);
     // Negative: the outer cards ride up, the way a fan of held cards does.
     const lift = -Math.min(Math.abs(index - mid) * 2, MAX_LIFT);
+    // -ml-5 puts the next card over this one's right edge, so the face value
+    // is centred in what is actually visible rather than in the whole card.
+    const covered = index < total - 1;
     return (
         <button
             type="button"
@@ -50,7 +53,12 @@ export const HandCard = ({
             <span className="absolute left-1.5 top-1 text-xs font-semibold">
                 {cardLabel(card)}
             </span>
-            <span className="flex h-full items-center justify-center text-3xl font-semibold">
+            <span
+                className={cn(
+                    "flex h-full items-center justify-center text-3xl font-semibold",
+                    covered && "pr-4",
+                )}
+            >
                 {cardLabel(card)}
             </span>
             <span className="absolute bottom-1 right-1.5 rotate-180 text-xs font-semibold">

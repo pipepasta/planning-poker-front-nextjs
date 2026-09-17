@@ -31,7 +31,7 @@ export const ParticipantsPanel = ({
     const voted = participants.filter((p) => p.hasVoted).length;
     return (
         // min-h keeps the panel reading as a panel while a room is still empty.
-        <Panel className="relative w-full min-h-56 p-4 sm:min-h-64 sm:p-5">
+        <Panel className="relative flex w-full min-h-56 flex-col p-4 sm:min-h-64 sm:p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
                 <h2 className="font-semibold">Participants</h2>
                 <span className="text-sm text-muted-foreground tabular-nums">
@@ -39,11 +39,11 @@ export const ParticipantsPanel = ({
                 </span>
             </div>
             {participants.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">
+                <p className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
                     Waiting for people to join…
                 </p>
             ) : (
-                <div className="flex flex-wrap justify-center gap-x-4 gap-y-5">
+                <div className="flex flex-1 flex-wrap content-center items-center justify-center gap-x-4 gap-y-5">
                     {participants.map((p, i) => (
                         <ParticipantCard
                             key={p.clientId}

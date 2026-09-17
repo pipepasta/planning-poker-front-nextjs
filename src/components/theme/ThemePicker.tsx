@@ -1,5 +1,6 @@
 "use client";
 import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
 import { THEMES, type ThemeId, themeAtom } from "@/src/lib/prefs";
 
@@ -15,6 +16,12 @@ const SWATCH_HUE: Record<ThemeId, number> = {
 
 export const ThemePicker = () => {
     const [theme, setTheme] = useAtom(themeAtom);
+    // themeAtom reads localStorage, which the server cannot see: rendering the
+    // selection before mount makes the server and the client disagree. Nothing
+    // is selected for the first client render, then the effect settles it.
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    const selected = mounted ? theme : null;
     return (
         <div
             role="radiogroup"
@@ -27,12 +34,12 @@ export const ThemePicker = () => {
                     key={t.id}
                     type="button"
                     role="radio"
-                    aria-checked={theme === t.id}
+                    aria-checked={selected === t.id}
                     aria-label={`${t.label} theme`}
                     onClick={() => setTheme(t.id)}
                     className={cn(
                         "size-5 rounded-full border border-border transition-transform hover:scale-110",
-                        theme === t.id &&
+                        selected === t.id &&
                             "ring-2 ring-ring ring-offset-2 ring-offset-background",
                     )}
                     style={{
