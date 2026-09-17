@@ -19,6 +19,14 @@ export const metadata: Metadata = {
     other: { google: "notranslate" },
 };
 
+/**
+ * Applies the stored theme before the first paint. No interpolation: the
+ * value is read from localStorage at runtime, validated against the known
+ * ids, and only ever reaches `dataset.theme`, so nothing can be injected.
+ * Keep the ids and the storage key in step with `src/lib/prefs.ts`.
+ */
+const THEME_BOOTSTRAP = `try{var t=JSON.parse(localStorage.getItem("mp.theme"));if(["pink","blue","green","purple","orange"].indexOf(t)>-1)document.documentElement.dataset.theme=t}catch(e){}`;
+
 export default function RootLayout({
     children,
 }: {
@@ -26,6 +34,16 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={inter.variable}>
+            <head>
+                {/* The server cannot see localStorage, so without this the first
+                    paint always uses the default theme and then snaps to the
+                    stored one — very visible now that the header is a saturated
+                    bar. Runs before paint; ThemeProvider owns every later change. */}
+                <script
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: fixed literal, no interpolation
+                    dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }}
+                />
+            </head>
             <body className="min-h-dvh">
                 <ThemeProvider>{children}</ThemeProvider>
                 <Toaster />
