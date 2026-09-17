@@ -7,7 +7,8 @@ export const metadata: Metadata = { title: "Sign in" };
 
 const Page = () => (
     <div className="flex min-h-dvh flex-col">
-        <header className="flex justify-end p-3">
+        <header className="flex items-center justify-between gap-3 p-3">
+            <span className="text-lg font-semibold">macaroni poker</span>
             <ThemePicker />
         </header>
         <main className="flex flex-1 items-center justify-center p-4">

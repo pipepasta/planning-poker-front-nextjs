@@ -19,10 +19,8 @@ export const HomeScreen = () => {
 
     return (
         <div className="flex min-h-dvh flex-col">
-            <header className="flex items-center justify-between p-3">
-                <span className="font-display text-xl font-extrabold">
-                    macaroni poker
-                </span>
+            <header className="flex items-center justify-between gap-3 p-3">
+                <span className="text-lg font-semibold">macaroni poker</span>
                 <div className="flex items-center gap-3">
                     {session.status === "ready" && (
                         <NameDialog
@@ -35,11 +33,11 @@ export const HomeScreen = () => {
             </header>
             <main className="flex flex-1 items-center justify-center p-4">
                 <Panel className="w-full max-w-sm p-6">
-                    <h1 className="mb-4 font-display text-2xl font-extrabold">
-                        Join a table
+                    <h1 className="mb-5 text-center text-2xl font-semibold">
+                        Join room
                     </h1>
                     <form
-                        className="flex gap-2"
+                        className="flex gap-3"
                         onSubmit={(e) => {
                             e.preventDefault();
                             if (valid) enter(roomId);
@@ -57,18 +55,17 @@ export const HomeScreen = () => {
                             Join
                         </Button>
                     </form>
-                    <div className="my-5 flex items-center gap-3 text-sm font-bold text-ink-soft">
-                        <span className="h-0.5 flex-1 bg-ink/20" />
+                    <div className="my-5 flex items-center gap-3 text-sm text-muted-foreground">
+                        <span className="h-px flex-1 bg-border" />
                         or
-                        <span className="h-0.5 flex-1 bg-ink/20" />
+                        <span className="h-px flex-1 bg-border" />
                     </div>
                     <Button
-                        variant="secondary"
                         size="lg"
                         className="w-full"
                         onClick={() => enter(crypto.randomUUID().slice(0, 8))}
                     >
-                        Deal a new table
+                        Create new room
                     </Button>
                 </Panel>
             </main>

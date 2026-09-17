@@ -14,15 +14,13 @@ export const LoginForm = () => {
     const next = useSearchParams().get("next");
     return (
         <Panel className="w-full max-w-sm p-6">
-            <h1 className="mb-1 font-display text-3xl font-extrabold">
-                macaroni poker
-            </h1>
-            <p className="mb-5 text-sm text-ink-soft">
-                Pick a nickname and pull up a chair.
+            <h1 className="mb-1 text-center text-2xl font-semibold">Sign In</h1>
+            <p className="mb-5 text-center text-sm text-muted-foreground">
+                Choose a nickname to get started.
             </p>
-            <form action={action} className="flex flex-col gap-3">
+            <form action={action} className="flex flex-col gap-2">
                 {next && <input type="hidden" name="next" value={next} />}
-                <label htmlFor="nickname" className="text-sm font-bold">
+                <label htmlFor="nickname" className="text-sm font-medium">
                     Nickname
                 </label>
                 <Input
@@ -35,10 +33,7 @@ export const LoginForm = () => {
                     invalid={!!state.message}
                 />
                 {state.message && (
-                    <p
-                        role="alert"
-                        className="text-sm font-semibold text-danger"
-                    >
+                    <p role="alert" className="text-sm text-destructive">
                         {state.message}
                     </p>
                 )}
@@ -46,9 +41,9 @@ export const LoginForm = () => {
                     type="submit"
                     size="lg"
                     disabled={pending}
-                    className="mt-2 w-full"
+                    className="mt-3 w-full"
                 >
-                    Join the table
+                    Sign in
                 </Button>
             </form>
         </Panel>
