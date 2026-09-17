@@ -1,3 +1,4 @@
+import { Spinner } from "@/src/components/ui/Spinner";
 import type { Deck } from "@/src/domain/deck";
 import { summarize } from "@/src/domain/results";
 import type { SnapshotParticipant } from "@/src/protocol/messages";
@@ -5,42 +6,60 @@ import type { SnapshotParticipant } from "@/src/protocol/messages";
 interface Props {
     deck: Deck;
     participants: SnapshotParticipant[];
+    revealed: boolean;
 }
 
-const Stat = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex min-w-16 flex-col items-center sm:min-w-20">
-        <span className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">
-            {label}
-        </span>
-        <span className="font-display text-2xl font-extrabold leading-tight">
-            {value}
-        </span>
+const Stat = ({
+    label,
+    value,
+    pending,
+}: {
+    label: string;
+    value: string;
+    pending: boolean;
+}) => (
+    <div className="flex flex-1 flex-col items-center gap-0.5 px-1">
+        <span className="text-sm text-muted-foreground">{label}</span>
+        {pending ? (
+            <span className="flex h-8 items-center">
+                <Spinner />
+            </span>
+        ) : (
+            <span className="h-8 text-2xl font-semibold leading-8">
+                {value}
+            </span>
+        )}
     </div>
 );
 
-export const ResultsPanel = ({ deck, participants }: Props) => {
+export const ResultsPanel = ({ deck, participants, revealed }: Props) => {
     const s = summarize(
         deck,
         participants.map((p) => p.vote),
     );
     return (
-        <div className="flex flex-col items-center gap-2">
-            {s.consensus && (
-                <span className="pop-in rounded-full border-2 border-ink bg-macaroni px-3 py-0.5 font-display text-sm font-extrabold shadow-hard-sm">
+        <div className="flex w-full flex-col items-center gap-2">
+            {revealed && s.consensus && (
+                <span className="pop-in rounded-full bg-primary px-3 py-0.5 text-sm font-semibold text-primary-foreground shadow-sm">
                     Consensus!
                 </span>
             )}
-            {/* One row on a phone too: a wrapped third stat makes the panel
-                tall enough to push its corners off the felt. */}
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                {s.average !== null && (
-                    <Stat label="Average" value={s.average} />
-                )}
+            <div className="flex w-full max-w-3xl items-start">
                 <Stat
-                    label="Mode"
-                    value={s.mode.length ? s.mode.join(", ") : "-"}
+                    label="average"
+                    value={s.average ?? "-"}
+                    pending={!revealed}
                 />
-                <Stat label="Decision" value={s.decision} />
+                <Stat
+                    label="mode"
+                    value={s.mode.length ? s.mode.join(", ") : "-"}
+                    pending={!revealed}
+                />
+                <Stat
+                    label="scrum decision"
+                    value={s.decision}
+                    pending={!revealed}
+                />
             </div>
         </div>
     );

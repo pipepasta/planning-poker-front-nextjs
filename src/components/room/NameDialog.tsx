@@ -29,7 +29,7 @@ export const NameDialog = ({
             }}
         >
             <DialogTrigger
-                className="inline-flex h-10 items-center gap-1.5 rounded-xl px-2 font-bold hover:bg-ink/10"
+                className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2 font-semibold transition-colors hover:bg-accent hover:text-accent-foreground"
                 aria-label="Change your name"
             >
                 <UserRound size={18} />
@@ -37,7 +37,7 @@ export const NameDialog = ({
             </DialogTrigger>
             <DialogContent
                 title="Change name"
-                description="How should the table call you?"
+                description="What should we call you?"
             >
                 <form
                     className="flex flex-col gap-3"

@@ -17,7 +17,7 @@ export const TimerControl = ({ timer, clockOffsetMs, onAction }: Props) => {
     return (
         <div className="flex items-center gap-1">
             <span
-                className="font-display text-lg font-bold tabular-nums"
+                className="text-lg font-semibold tabular-nums"
                 aria-live="off"
             >
                 {text}

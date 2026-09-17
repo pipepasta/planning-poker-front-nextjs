@@ -22,14 +22,10 @@ export const CopyLink = ({ roomId }: { roomId: string }) => {
             type="button"
             onClick={copy}
             aria-label="Copy room link"
-            className="inline-flex h-10 items-center gap-2 rounded-xl px-2 font-display text-lg font-bold hover:bg-ink/10"
+            className="inline-flex h-10 items-center gap-2 rounded-lg px-2 text-base font-semibold transition-colors hover:bg-accent hover:text-accent-foreground"
         >
             <span className="max-md:hidden">{roomId}</span>
-            {copied ? (
-                <Check size={18} className="text-success" />
-            ) : (
-                <Copy size={18} />
-            )}
+            {copied ? <Check size={18} /> : <Copy size={18} />}
         </button>
     );
 };

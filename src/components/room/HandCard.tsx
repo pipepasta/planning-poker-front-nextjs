@@ -39,21 +39,21 @@ export const HandCard = ({
             onClick={() => onSelect(card)}
             style={{ transform: `rotate(${rotate}deg) translateY(${lift}px)` }}
             className={cn(
-                "group relative -ml-5 first:ml-0 h-24 w-16 shrink-0 rounded-xl border-2 border-ink font-display text-ink transition-transform duration-150 sm:h-28 sm:w-20",
-                "hover:-translate-y-2 hover:z-10 focus-visible:z-10",
+                "group relative -ml-5 h-24 w-16 shrink-0 rounded-lg border border-border transition-transform duration-150 first:ml-0 sm:h-28 sm:w-20",
+                "hover:z-10 hover:-translate-y-2 focus-visible:z-10",
                 selected
-                    ? "z-20 -translate-y-4 bg-macaroni shadow-hard-lg"
-                    : "bg-cream shadow-hard",
+                    ? "z-20 -translate-y-4 bg-primary text-primary-foreground shadow-md"
+                    : "bg-card text-card-foreground shadow-sm",
                 disabled && "opacity-60",
             )}
         >
-            <span className="absolute left-1.5 top-1 text-xs font-bold">
+            <span className="absolute left-1.5 top-1 text-xs font-semibold">
                 {cardLabel(card)}
             </span>
-            <span className="flex h-full items-center justify-center text-3xl font-extrabold">
+            <span className="flex h-full items-center justify-center text-3xl font-semibold">
                 {cardLabel(card)}
             </span>
-            <span className="absolute bottom-1 right-1.5 rotate-180 text-xs font-bold">
+            <span className="absolute bottom-1 right-1.5 rotate-180 text-xs font-semibold">
                 {cardLabel(card)}
             </span>
         </button>

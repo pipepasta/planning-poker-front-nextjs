@@ -7,7 +7,7 @@ export const ConnectionBanner = ({ status }: { status: ConnectionStatus }) => {
             // biome-ignore lint/a11y/useSemanticElements: a live status banner, not form output
             <div
                 role="status"
-                className="border-b-2 border-ink bg-macaroni px-4 py-1 text-center text-sm font-bold"
+                className="border-b border-border bg-secondary px-4 py-1 text-center text-sm font-semibold text-secondary-foreground"
             >
                 Reconnecting…
             </div>
@@ -17,7 +17,7 @@ export const ConnectionBanner = ({ status }: { status: ConnectionStatus }) => {
         return (
             <div
                 role="alert"
-                className="flex items-center justify-center gap-3 border-b-2 border-ink bg-danger px-4 py-1 text-sm font-bold text-cream"
+                className="flex items-center justify-center gap-3 bg-destructive px-4 py-1 text-sm font-semibold text-destructive-foreground"
             >
                 Connection lost.
                 <Button

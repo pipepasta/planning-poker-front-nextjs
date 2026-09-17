@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { Button } from "@/src/components/ui/Button";
 import { Panel } from "@/src/components/ui/Panel";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { DECKS, DEFAULT_DECK_ID } from "@/src/domain/deck";
@@ -10,12 +11,12 @@ import { summarize } from "@/src/domain/results";
 import { useSession } from "@/src/lib/session";
 import { useReactions } from "@/src/room/useReactions";
 import { useRoomConnection } from "@/src/room/useRoomConnection";
-import { CenterPanel } from "./CenterPanel";
 import { ConnectionBanner } from "./ConnectionBanner";
 import { Hand } from "./Hand";
+import { ParticipantsPanel } from "./ParticipantsPanel";
 import { ReactionBar } from "./ReactionBar";
+import { ResultsPanel } from "./ResultsPanel";
 import { RoomHeader } from "./RoomHeader";
-import { Table } from "./Table";
 
 const Confetti = dynamic(() => import("react-confetti"), { ssr: false });
 
@@ -47,15 +48,13 @@ const useWindowSize = () => {
 const SignedOut = ({ next }: { next: string }) => (
     <main className="flex min-h-dvh items-center justify-center p-4">
         <Panel className="flex w-full max-w-sm flex-col items-start gap-3 p-6">
-            <h1 className="font-display text-2xl font-extrabold">
-                You are signed out
-            </h1>
-            <p className="text-sm font-bold text-ink-soft">
-                Sign in again to take a seat at this table.
+            <h1 className="text-2xl font-semibold">You are signed out</h1>
+            <p className="text-sm text-muted-foreground">
+                Sign in again to join this room.
             </p>
             <Link
                 href={`/login?next=${encodeURIComponent(next)}`}
-                className="rounded-xl border-2 border-ink bg-macaroni px-4 py-2 font-display font-bold text-ink shadow-hard"
+                className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-6 font-semibold text-primary-foreground shadow-sm"
             >
                 Go to sign in
             </Link>
@@ -64,17 +63,26 @@ const SignedOut = ({ next }: { next: string }) => (
 );
 
 const RoomSkeleton = () => (
-    <div className="mx-auto flex h-full w-full min-h-0 max-w-4xl flex-1 flex-col items-center gap-4">
-        <Skeleton className="h-10 w-full shrink-0" />
-        <Skeleton className="w-full min-h-0 flex-1 rounded-[50%]" />
-        <Skeleton className="h-20 w-2/3 shrink-0" />
+    <div className="flex w-full flex-col items-center gap-4">
+        <Skeleton className="h-10 w-full max-w-3xl" />
+        <Skeleton className="h-64 w-full" />
+        <Skeleton className="h-12 w-84" />
+        <Skeleton className="h-28 w-full max-w-md" />
+    </div>
+);
+
+const Shell = ({ children }: { children: React.ReactNode }) => (
+    <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-3 py-4 sm:gap-5">
+        {children}
     </div>
 );
 
 const LoadingRoom = () => (
-    <div className="flex h-dvh flex-col overflow-hidden p-6">
-        <RoomSkeleton />
-    </div>
+    <main className="min-h-dvh">
+        <Shell>
+            <RoomSkeleton />
+        </Shell>
+    </main>
 );
 
 const ConnectedRoom = ({
@@ -120,11 +128,9 @@ const ConnectedRoom = ({
     }, [consensus]);
 
     return (
-        // A fixed-height, non-scrolling column: the table gives up space so
-        // the hand at the bottom is always fully visible. Under 600px tall
-        // the table would have to shrink past its own seat ring, so the shell
-        // stops clipping and the page scrolls instead.
-        <div className="flex h-dvh flex-col overflow-hidden [@media(max-height:599px)]:h-auto [@media(max-height:599px)]:min-h-dvh [@media(max-height:599px)]:overflow-visible">
+        // A normally scrolling page: the stack has no fixed-height table to fit
+        // around, so nothing needs clipping.
+        <div className="min-h-dvh">
             {celebrate && !reduceMotion && (
                 <Confetti
                     width={width}
@@ -144,37 +150,49 @@ const ConnectedRoom = ({
                 onDeck={actions.changeDeck}
             />
             <ConnectionBanner status={state.connection} />
-            <main className="mx-auto flex w-full min-h-0 max-w-6xl flex-1 flex-col items-center gap-2 px-3 py-3">
-                {/* The seat ring sits at 16%/84% of this box and each seat is
-                    ~110px tall, so under ~344px it clips; give it a floor and
-                    let the (now scrolling) page absorb the overflow. */}
-                <div className="flex w-full min-h-0 flex-1 flex-col [@media(max-height:599px)]:min-h-[360px]">
+            <main>
+                <Shell>
                     {room ? (
-                        <Table
-                            participants={room.participants}
-                            revealed={revealed}
-                            myClientId={userId}
-                            reactions={reactions}
-                        >
-                            <CenterPanel
-                                phase={room.phase}
+                        <>
+                            <ResultsPanel
                                 deck={deck}
                                 participants={room.participants}
-                                onReveal={actions.reveal}
-                                onNextRound={actions.nextRound}
+                                revealed={revealed}
                             />
-                        </Table>
+                            <ParticipantsPanel
+                                participants={room.participants}
+                                revealed={revealed}
+                                myClientId={userId}
+                                reactions={reactions}
+                            />
+                            <div className="flex flex-wrap items-center justify-center gap-4">
+                                <Button
+                                    size="lg"
+                                    className="w-40"
+                                    onClick={actions.reveal}
+                                >
+                                    Reveal
+                                </Button>
+                                <Button
+                                    size="lg"
+                                    className="w-40"
+                                    onClick={actions.nextRound}
+                                >
+                                    Next Vote
+                                </Button>
+                            </div>
+                        </>
                     ) : (
                         <RoomSkeleton />
                     )}
-                </div>
-                <ReactionBar onReact={actions.react} />
-                <Hand
-                    deck={deck}
-                    selected={state.myCard}
-                    onSelect={actions.selectCard}
-                    disabled={!room || state.connection !== "connected"}
-                />
+                    <Hand
+                        deck={deck}
+                        selected={state.myCard}
+                        onSelect={actions.selectCard}
+                        disabled={!room || state.connection !== "connected"}
+                    />
+                    <ReactionBar onReact={actions.react} />
+                </Shell>
             </main>
         </div>
     );

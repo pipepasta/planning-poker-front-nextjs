@@ -20,11 +20,9 @@ interface Props {
 }
 
 export const RoomHeader = (p: Props) => (
-    <header className="sticky top-0 z-30 border-b-2 border-ink bg-cream/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5">
-            <span className="font-display text-xl font-extrabold">
-                macaroni poker
-            </span>
+    <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2">
+            <span className="text-lg font-semibold">macaroni poker</span>
             <CopyLink roomId={p.roomId} />
             <div className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">
                 <TimerControl

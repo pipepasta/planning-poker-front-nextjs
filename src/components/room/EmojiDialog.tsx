@@ -21,13 +21,13 @@ export const EmojiDialog = ({ open, onOpenChange, onPick }: Props) => (
                 <EmojiPicker.Search
                     autoFocus
                     placeholder="Search emojis…"
-                    className="mb-2 h-10 rounded-xl border-2 border-ink bg-white px-3"
+                    className="mb-2 h-10 rounded-lg border border-input bg-card px-3"
                 />
-                <EmojiPicker.Viewport className="relative flex-1 overflow-y-auto rounded-xl border-2 border-ink bg-white">
-                    <EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-sm text-ink-soft">
+                <EmojiPicker.Viewport className="relative flex-1 overflow-y-auto rounded-lg border border-border bg-card">
+                    <EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
                         Loading…
                     </EmojiPicker.Loading>
-                    <EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-sm text-ink-soft">
+                    <EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
                         No emoji found.
                     </EmojiPicker.Empty>
                     <EmojiPicker.List
@@ -36,7 +36,7 @@ export const EmojiDialog = ({ open, onOpenChange, onPick }: Props) => (
                             CategoryHeader: ({ category, ...props }) => (
                                 <div
                                     {...props}
-                                    className="bg-white px-2 pb-1 pt-2 text-xs font-bold text-ink-soft"
+                                    className="bg-card px-2 pb-1 pt-2 text-xs font-semibold text-muted-foreground"
                                 >
                                     {category.label}
                                 </div>
@@ -49,7 +49,7 @@ export const EmojiDialog = ({ open, onOpenChange, onPick }: Props) => (
                             Emoji: ({ emoji, ...props }) => (
                                 <button
                                     {...props}
-                                    className="flex size-8 items-center justify-center rounded-md text-lg data-[active]:bg-macaroni"
+                                    className="flex size-8 items-center justify-center rounded-md text-lg data-[active]:bg-accent"
                                 >
                                     {emoji.emoji}
                                 </button>

@@ -18,7 +18,7 @@ export const Hand = ({ deck, selected, onSelect, disabled }: Props) => {
             // The fan arcs upward and the selected card rises further, so the
             // top padding has to clear lift + selection + the rotated corners
             // (overflow-x: auto makes the vertical axis clip too).
-            className="flex w-full min-w-0 shrink-0 items-end justify-center overflow-x-auto px-6 pb-4 pt-10"
+            className="flex w-full min-w-0 items-end justify-center overflow-x-auto px-6 pb-4 pt-10"
         >
             {cards.map((card, i) => (
                 <HandCard

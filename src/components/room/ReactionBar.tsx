@@ -15,7 +15,7 @@ export const ReactionBar = ({
         <div
             role="toolbar"
             aria-label="Reactions"
-            className="flex shrink-0 items-center gap-1 rounded-full border-2 border-ink bg-cream px-2 py-1 shadow-hard"
+            className="flex max-w-full shrink-0 flex-wrap items-center justify-center gap-1 rounded-full border border-border bg-card px-2 py-1 shadow-sm"
         >
             {STANDARD_EMOJIS.map((e) => (
                 <button
@@ -32,7 +32,7 @@ export const ReactionBar = ({
                 type="button"
                 aria-label="More emojis"
                 onClick={() => setOpen(true)}
-                className="flex size-9 items-center justify-center rounded-full hover:bg-ink/10"
+                className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
                 <SmilePlus size={20} />
             </button>
