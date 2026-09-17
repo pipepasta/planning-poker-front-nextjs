@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex min-w-20 flex-col items-center">
+    <div className="flex min-w-16 flex-col items-center sm:min-w-20">
         <span className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">
             {label}
         </span>
@@ -30,7 +30,9 @@ export const ResultsPanel = ({ deck, participants }: Props) => {
                     Consensus!
                 </span>
             )}
-            <div className="flex flex-wrap justify-center gap-4">
+            {/* One row on a phone too: a wrapped third stat makes the panel
+                tall enough to push its corners off the felt. */}
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
                 {s.average !== null && (
                     <Stat label="Average" value={s.average} />
                 )}

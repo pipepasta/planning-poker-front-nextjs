@@ -79,8 +79,10 @@ export const Seat = ({
             </div>
             <span
                 className={cn(
+                    // A name tag, not bare text: seats on the left and right
+                    // land on the dark rim, where ink on cloth is unreadable.
                     "max-w-24 truncate rounded-md px-1.5 text-xs font-bold text-ink",
-                    isMe && "bg-macaroni",
+                    isMe ? "bg-macaroni" : "bg-cream",
                 )}
                 title={participant.name}
             >
