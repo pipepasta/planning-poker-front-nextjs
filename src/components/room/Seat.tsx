@@ -29,9 +29,20 @@ export const Seat = ({
             className={cn("flex w-24 flex-col items-center gap-1", className)}
         >
             <div
-                className="h-20 w-14 sm:h-[5.75rem] sm:w-16"
+                className="relative h-20 w-14 sm:h-[5.75rem] sm:w-16"
                 style={{ perspective: "800px" }}
             >
+                {/* Placemat: an empty seat still reads as a seat at the table. */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -inset-x-3 -inset-y-2 rounded-[50%] border-2 border-ink/30"
+                />
+                {isMe && (
+                    <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -inset-1 rounded-xl border-2 border-macaroni"
+                    />
+                )}
                 <div
                     className={cn(
                         "flip relative h-full w-full",
@@ -41,7 +52,8 @@ export const Seat = ({
                 >
                     <div
                         className={cn(
-                            "face absolute inset-0 flex items-center justify-center rounded-lg border-2 border-ink",
+                            "face absolute inset-0 flex items-center justify-center rounded-lg border-ink",
+                            isMe ? "border-[3px]" : "border-2",
                             participant.hasVoted
                                 ? "bg-ink shadow-hard-sm bg-[repeating-linear-gradient(45deg,transparent_0_6px,rgba(255,247,225,0.18)_6px_8px)]"
                                 : "border-dashed bg-cream/60 animate-pulse",
@@ -55,7 +67,12 @@ export const Seat = ({
                             </span>
                         )}
                     </div>
-                    <div className="face face-back absolute inset-0 flex items-center justify-center rounded-lg border-2 border-ink bg-cream font-display text-2xl font-extrabold text-ink shadow-hard-sm">
+                    <div
+                        className={cn(
+                            "face face-back absolute inset-0 flex items-center justify-center rounded-lg border-ink bg-cream font-display text-2xl font-extrabold text-ink shadow-hard-sm",
+                            isMe ? "border-[3px]" : "border-2",
+                        )}
+                    >
                         {face}
                     </div>
                 </div>
