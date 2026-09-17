@@ -7,7 +7,7 @@ export const Panel = ({
 }: HTMLAttributes<HTMLDivElement>) => (
     <div
         className={cn(
-            "rounded-card border-2 border-ink bg-cream shadow-hard-lg text-ink",
+            "rounded-xl border border-border bg-card text-card-foreground shadow-md",
             className,
         )}
         {...props}

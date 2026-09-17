@@ -8,12 +8,12 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
     primary:
-        "bg-macaroni border-2 border-ink shadow-hard hover:bg-macaroni-deep pressable",
+        "bg-primary text-primary-foreground shadow-sm hover:brightness-95 active:brightness-90",
     secondary:
-        "bg-cream border-2 border-ink shadow-hard hover:bg-cream-deep pressable",
-    ghost: "bg-transparent hover:bg-ink/10",
+        "bg-secondary text-secondary-foreground shadow-sm hover:brightness-95 active:brightness-90",
+    ghost: "bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground",
 };
-const sizes = { md: "h-10 px-4 text-base", lg: "h-12 px-6 text-lg" };
+const sizes = { md: "h-10 px-4 text-sm", lg: "h-12 px-6 text-base" };
 
 export const Button = ({
     variant = "primary",
@@ -25,8 +25,8 @@ export const Button = ({
     <button
         type={type}
         className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-xl font-display font-bold text-ink select-none",
-            "disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
+            "inline-flex select-none items-center justify-center gap-2 rounded-lg font-semibold transition",
+            "disabled:pointer-events-none disabled:opacity-50",
             variants[variant],
             sizes[size],
             className,

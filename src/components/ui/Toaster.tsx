@@ -3,10 +3,10 @@ import { cn } from "@/src/lib/cn";
 import { dismissToast, useToasts } from "@/src/lib/toast";
 
 const kinds = {
-    info: "bg-cream",
-    success: "bg-cream border-success",
-    warning: "bg-macaroni",
-    error: "bg-cream border-danger",
+    info: "border-border bg-card text-card-foreground",
+    success: "border-border bg-primary text-primary-foreground",
+    warning: "border-border bg-secondary text-secondary-foreground",
+    error: "border-destructive bg-destructive text-destructive-foreground",
 };
 
 export const Toaster = () => {
@@ -22,7 +22,7 @@ export const Toaster = () => {
                     type="button"
                     onClick={() => dismissToast(t.id)}
                     className={cn(
-                        "pointer-events-auto rounded-xl border-2 border-ink px-4 py-2 text-sm font-semibold shadow-hard pop-in",
+                        "pop-in pointer-events-auto rounded-lg border px-4 py-2 text-sm font-semibold shadow-lg",
                         kinds[t.kind],
                     )}
                 >

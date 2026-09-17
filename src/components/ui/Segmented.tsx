@@ -16,7 +16,7 @@ export const Segmented = <T extends string>({
     <div
         role="radiogroup"
         aria-label={label}
-        className="inline-flex rounded-xl border-2 border-ink bg-cream p-0.5 shadow-hard-sm"
+        className="inline-flex rounded-full border border-border bg-card p-0.5 shadow-sm"
     >
         {options.map((o) => (
             // biome-ignore lint/a11y/useSemanticElements: styled toggle, not a form control
@@ -27,10 +27,10 @@ export const Segmented = <T extends string>({
                 aria-checked={o.value === value}
                 onClick={() => onChange(o.value)}
                 className={cn(
-                    "rounded-lg px-3 py-1 font-display text-sm font-bold transition-colors",
+                    "rounded-full px-3 py-1 text-sm font-semibold transition-colors",
                     o.value === value
-                        ? "bg-macaroni text-ink"
-                        : "text-ink-soft hover:bg-ink/10",
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 )}
             >
                 {o.label}

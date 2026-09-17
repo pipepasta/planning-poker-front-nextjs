@@ -9,9 +9,9 @@ export const Input = ({ className, invalid, ...props }: Props) => (
     <input
         aria-invalid={invalid || undefined}
         className={cn(
-            "h-12 w-full rounded-xl border-2 border-ink bg-white px-4 font-body text-ink placeholder:text-ink/40",
-            "focus:outline-none focus:shadow-hard-sm",
-            invalid && "border-danger",
+            "h-12 w-full rounded-lg border border-input bg-card px-4 text-foreground",
+            "placeholder:text-muted-foreground",
+            invalid && "border-destructive",
             className,
         )}
         {...props}

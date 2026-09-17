@@ -21,20 +21,21 @@ export const DialogContent = ({
     className,
 }: ContentProps) => (
     <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 z-40 bg-ink/40" />
+        <RadixDialog.Overlay className="fixed inset-0 z-40 bg-foreground/40" />
         <RadixDialog.Content
             className={cn(
-                "fixed left-1/2 top-1/2 z-50 w-[min(92vw,26rem)] -translate-x-1/2 -translate-y-1/2 rounded-card border-2 border-ink bg-cream p-5 shadow-hard-lg pop-in",
+                "pop-in fixed left-1/2 top-1/2 z-50 w-[min(92vw,26rem)] -translate-x-1/2 -translate-y-1/2",
+                "rounded-xl border border-border bg-popover p-5 text-popover-foreground shadow-lg",
                 className,
             )}
         >
             <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
-                    <RadixDialog.Title className="font-display text-xl font-bold">
+                    <RadixDialog.Title className="text-xl font-semibold">
                         {title}
                     </RadixDialog.Title>
                     {description ? (
-                        <RadixDialog.Description className="text-sm text-ink-soft">
+                        <RadixDialog.Description className="text-sm text-muted-foreground">
                             {description}
                         </RadixDialog.Description>
                     ) : (
@@ -45,7 +46,7 @@ export const DialogContent = ({
                 </div>
                 <RadixDialog.Close
                     aria-label="Close"
-                    className="rounded-lg p-1 hover:bg-ink/10"
+                    className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                     <X size={18} />
                 </RadixDialog.Close>
