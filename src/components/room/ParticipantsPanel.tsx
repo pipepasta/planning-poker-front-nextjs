@@ -32,7 +32,9 @@ export const ParticipantsPanel = ({
     return (
         // min-h keeps the panel reading as a panel while a room is still empty.
         <Panel className="relative flex w-full min-h-56 flex-col p-4 sm:min-h-64 sm:p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+            {/* Above the floats (z-10): a float that drifts this high must not
+                cover the heading or the vote count. */}
+            <div className="relative z-20 mb-4 flex items-center justify-between gap-3">
                 <h2 className="font-semibold">Participants</h2>
                 <span className="text-sm text-muted-foreground tabular-nums">
                     {voted} / {participants.length} voted
