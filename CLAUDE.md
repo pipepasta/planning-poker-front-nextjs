@@ -45,8 +45,8 @@ This is a Next.js planning poker client application that connects to a WebSocket
   - `cn.ts` - `cn()` class name helper
 - `src/components/` - Presentational components
   - `ui/` - Button, IconButton, Panel, Input, Dialog, Toaster, Skeleton, Spinner, Segmented
-  - `theme/` - ThemeProvider, ThemePicker, ThemeDialog
-  - `room/` - RoomHeader, TimerControl, RoomSettingsDialog, DeckSwitcher, MetricSwitcher, NameDialog, CopyLink, ResultsPanel, ParticipantsPanel, ParticipantCard, Hand, HandCard, ReactionBar, ReactionFloat, EmojiDialog, ConnectionBanner, RoomScreen
+  - `theme/` - ThemeProvider, ThemePicker
+  - `room/` - RoomHeader, TimerControl, SettingsDialog, DeckSwitcher, MetricSwitcher, NameDialog, CopyLink, ResultsPanel, ParticipantsPanel, ParticipantCard, Hand, HandCard, ReactionBar, ReactionFloat, EmojiDialog, ConnectionBanner, RoomScreen
   - `home/HomeScreen.tsx`, `login/LoginForm.tsx` - Screens
 - `app/` - Routes: `layout.tsx`, `globals.css`, `page.tsx`, `login/{page.tsx,actions.ts}`, `rooms/[roomId]/page.tsx`
 - `proxy.ts` - Auth redirect
@@ -72,7 +72,9 @@ The room is a normally scrolling page (`min-h-dvh`) holding one centred vertical
 
 `ResultsPanel` is one compact centred card, not a full-width band: the room shows a single statistic (the room's `metric`), as a small uppercase label above a large value, with the `Consensus!` pill beside that pair rather than stacked above it. Its height is fixed — the value line is `h-9` whether it holds the pending spinner, the value, or the value with the pill — so revealing and reaching consensus never move the participants panel. Measured: the card is 77px tall and the panel's top stays put in every state.
 
-**Header split, by who a setting affects.** The room's own settings (deck and metric) live behind the gear in `RoomSettingsDialog`, at every width. Personal settings stay out in the bar: `NameDialog` and `ThemeDialog`. So `RoomHeader` is one composition at every width — wordmark, copy link, timer, gear, name, theme — and it holds one row at 390px (measured: header 56px, content ending exactly on the 8px padding edge, no horizontal overflow). The 374px available there is why three things are compact below `sm`: the wordmark keeps its mark but drops its word (`Wordmark compact`), the name button drops its label (`NameDialog compact`), and the theme is one swatch that opens a dialog (`ThemeDialog`) rather than five inline swatches, which need 124px. `ThemePicker` itself is unchanged and still inline on the home and login pages.
+**Header split, by who a setting affects.** `SettingsDialog` (the gear) is the one sheet, with two labelled sections: **Room** — the deck and the metric, with "These change the room for everyone in it." — and **You** — name and theme. The room section is there at every width. The personal section is `sm:hidden`, so above `sm` it is `display:none` (and out of the tab order) because `NameDialog` and `ThemePicker` sit inline in the bar instead; below `sm` it is the only place they live.
+
+That is the trade the 390px bar forces, and it is settled: **the wordmark is never cut down.** The lockup keeps its mark *and* its word at every width (`Wordmark` has no compact mode by design — see its doc comment and af2d425); the 120px that costs comes out of the controls, which fold behind the gear, not out of the brand. Measured at 390px: header 56px, one row, `macaroni poker` fully visible at 120px and unclipped, the right-most control ending on 382 — exactly the 8px padding edge — and no horizontal overflow. `TimerControl`'s readout is `text-sm sm:text-lg` for the last few of those pixels. At 1280px the bar is wordmark, copy link, timer, gear, name, theme, ending on its padding edge too.
 
 ### Theme System
 - Colours are HSL triples in CSS variables consumed as `hsl(var(--x))`: `--background`, `--foreground`, `--card`, `--popover`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring` and their `-foreground` pairs. `@theme inline` in `app/globals.css` maps each to a Tailwind colour utility.

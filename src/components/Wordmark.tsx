@@ -4,22 +4,11 @@ import icon from "@/app/icon.png";
 import { cn } from "@/src/lib/cn";
 
 /**
- * The brand lockup: logo plus name, linking home. On its own it stays whole at
- * every width, so the mark and the word are always read together.
- *
- * `compact` drops the word below `sm`, and only the room bar asks for it: that
- * bar also carries the timer and every room and personal control, and measured
- * at 390px the word is the one 120px in it that is decoration rather than a
- * control. The mark still links home and still names the page to assistive
- * tech, so nothing is lost but the reading.
+ * The brand lockup: logo plus name, linking home. It stays whole at every
+ * width — the name is never dropped to save space — so the mark and the
+ * word are always read together.
  */
-export const Wordmark = ({
-    className,
-    compact,
-}: {
-    className?: string;
-    compact?: boolean;
-}) => (
+export const Wordmark = ({ className }: { className?: string }) => (
     <Link
         href="/"
         aria-label="macaroni poker, back to home"
@@ -35,12 +24,7 @@ export const Wordmark = ({
             height={24}
             className="size-5 rounded shadow-sm sm:size-6"
         />
-        <span
-            className={cn(
-                "whitespace-nowrap text-base font-semibold sm:text-lg",
-                compact && "max-sm:sr-only",
-            )}
-        >
+        <span className="whitespace-nowrap text-base font-semibold sm:text-lg">
             macaroni poker
         </span>
     </Link>

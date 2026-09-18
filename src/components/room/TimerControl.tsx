@@ -16,8 +16,12 @@ export const TimerControl = ({ timer, clockOffsetMs, onAction }: Props) => {
     const paused = timer?.status === "paused";
     return (
         <div className="flex items-center gap-1">
+            {/* A step smaller than the bar's other text below `sm`: the
+                wordmark keeps its word at 390px, and this is where the room
+                settings and the personal ones folding behind the gear still
+                leave the row a few pixels short of the padding edge. */}
             <span
-                className="text-base font-semibold tabular-nums sm:text-lg"
+                className="text-sm font-semibold tabular-nums sm:text-lg"
                 aria-live="off"
             >
                 {text}

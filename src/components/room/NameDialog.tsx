@@ -53,39 +53,27 @@ export const NameForm = ({
     );
 };
 
-/** `compact` keeps the button but drops the name label below `sm`. */
 export const NameDialog = ({
     name,
     onSave,
     className,
-    compact,
 }: {
     name: string;
     onSave: (name: string) => Promise<void> | void;
     className?: string;
-    compact?: boolean;
 }) => {
     const [open, setOpen] = useState(false);
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger
                 className={cn(
-                    "inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-2 font-semibold transition-colors hover:bg-accent hover:text-accent-foreground",
-                    compact &&
-                        "max-sm:size-10 max-sm:justify-center max-sm:px-0",
+                    "inline-flex h-10 items-center gap-1.5 rounded-lg px-2 font-semibold transition-colors hover:bg-accent hover:text-accent-foreground",
                     className,
                 )}
                 aria-label="Change your name"
             >
                 <UserRound size={18} />
-                <span
-                    className={cn(
-                        "max-w-28 truncate",
-                        compact && "max-sm:sr-only",
-                    )}
-                >
-                    {name || "Set name"}
-                </span>
+                <span className="max-w-28 truncate">{name || "Set name"}</span>
             </DialogTrigger>
             <DialogContent
                 title="Change name"
