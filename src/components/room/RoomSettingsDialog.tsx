@@ -1,22 +1,21 @@
 "use client";
 import { Settings } from "lucide-react";
-import { useState } from "react";
-import { ThemePicker } from "@/src/components/theme/ThemePicker";
 import {
     Dialog,
     DialogContent,
     DialogTrigger,
 } from "@/src/components/ui/Dialog";
 import { IconButton } from "@/src/components/ui/IconButton";
-import type { DeckId } from "@/src/domain/deck";
+import type { Deck, DeckId } from "@/src/domain/deck";
+import type { MetricId } from "@/src/domain/metric";
 import { DeckSwitcher } from "./DeckSwitcher";
-import { NameForm } from "./NameDialog";
+import { MetricSwitcher } from "./MetricSwitcher";
 
 interface Props {
-    name: string;
-    onRename: (name: string) => Promise<void>;
-    deckId: DeckId;
+    deck: Deck;
     onDeck: (id: DeckId) => void;
+    metric: MetricId;
+    onMetric: (id: MetricId) => void;
     className?: string;
 }
 
@@ -36,47 +35,39 @@ const Field = ({
 );
 
 /**
- * Below `sm` the header has no room for the deck, name and theme controls, so
- * they move in here behind one button. Above `sm` the trigger is display:none,
- * which also takes it out of the tab order.
+ * Everything in here belongs to the room rather than to the person changing it,
+ * which is why it is one dialog at every width: the name and the theme are
+ * personal and stay out in the header bar beside it.
  */
 export const RoomSettingsDialog = ({
-    name,
-    onRename,
-    deckId,
+    deck,
     onDeck,
+    metric,
+    onMetric,
     className,
-}: Props) => {
-    const [open, setOpen] = useState(false);
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <IconButton label="Room settings" className={className}>
-                    <Settings size={18} />
-                </IconButton>
-            </DialogTrigger>
-            <DialogContent
-                title="Room settings"
-                description="Deck, your name and the theme colour."
-            >
-                <div className="flex flex-col gap-5">
-                    <Field label="Deck">
-                        <DeckSwitcher deckId={deckId} onChange={onDeck} />
-                    </Field>
-                    <Field label="Your name">
-                        {open && (
-                            <NameForm
-                                name={name}
-                                onSave={onRename}
-                                onSaved={() => setOpen(false)}
-                            />
-                        )}
-                    </Field>
-                    <Field label="Theme colour">
-                        <ThemePicker />
-                    </Field>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
+}: Props) => (
+    <Dialog>
+        <DialogTrigger asChild>
+            <IconButton label="Room settings" className={className}>
+                <Settings size={18} />
+            </IconButton>
+        </DialogTrigger>
+        <DialogContent
+            title="Room settings"
+            description="These change the room for everyone in it."
+        >
+            <div className="flex flex-col gap-5">
+                <Field label="Deck">
+                    <DeckSwitcher deckId={deck.id} onChange={onDeck} />
+                </Field>
+                <Field label="Result shown">
+                    <MetricSwitcher
+                        metric={metric}
+                        deck={deck}
+                        onChange={onMetric}
+                    />
+                </Field>
+            </div>
+        </DialogContent>
+    </Dialog>
+);

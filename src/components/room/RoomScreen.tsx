@@ -7,6 +7,7 @@ import { Button } from "@/src/components/ui/Button";
 import { Panel } from "@/src/components/ui/Panel";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { DECKS, DEFAULT_DECK_ID } from "@/src/domain/deck";
+import { DEFAULT_METRIC_ID } from "@/src/domain/metric";
 import { summarize } from "@/src/domain/results";
 import { useSession } from "@/src/lib/session";
 import { useReactions } from "@/src/room/useReactions";
@@ -110,6 +111,7 @@ const ConnectedRoom = ({
     const reduceMotion = usePrefersReducedMotion();
     const room = state.room;
     const deck = DECKS[room?.deckId ?? DEFAULT_DECK_ID];
+    const metric = room?.metric ?? DEFAULT_METRIC_ID;
     const revealed = room?.phase === "revealed";
     const consensus =
         !!room &&
@@ -146,8 +148,10 @@ const ConnectedRoom = ({
                 timer={room?.timer}
                 clockOffsetMs={state.clockOffsetMs}
                 onTimer={actions.timer}
-                deckId={deck.id}
+                deck={deck}
                 onDeck={actions.changeDeck}
+                metric={metric}
+                onMetric={actions.changeMetric}
             />
             <ConnectionBanner status={state.connection} />
             <main>
@@ -156,6 +160,7 @@ const ConnectedRoom = ({
                         <>
                             <ResultsPanel
                                 deck={deck}
+                                metric={metric}
                                 participants={room.participants}
                                 revealed={revealed}
                             />
