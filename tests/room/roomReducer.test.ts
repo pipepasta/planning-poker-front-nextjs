@@ -5,6 +5,7 @@ import { initialRoomState, roomReducer } from "@/src/room/roomReducer";
 const snap = (over: Partial<RoomSnapshot> = {}): RoomSnapshot => ({
     id: "r1",
     deckId: "fibonacci",
+    metric: "decision",
     phase: "voting",
     timer: { status: "running", startedAt: 0, accumulatedMs: 0 },
     participants: [{ clientId: "me", name: "Me", hasVoted: false }],

@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { DECKS, type DeckId } from "@/src/domain/deck";
+import { type MetricId, metricLabel } from "@/src/domain/metric";
 import { tap } from "@/src/lib/haptics";
 import { toast } from "@/src/lib/toast";
 import {
@@ -23,6 +24,7 @@ export interface RoomActions {
     nextRound: () => void;
     timer: (action: TimerActionName) => void;
     changeDeck: (deckId: DeckId) => void;
+    changeMetric: (metric: MetricId) => void;
     react: (emoji: string) => void;
 }
 
@@ -56,6 +58,7 @@ export const useRoomConnection = ({
     const nameRef = useRef(name);
     const onReactionRef = useRef(onReaction);
     const prevDeckRef = useRef<DeckId | null>(null);
+    const prevMetricRef = useRef<MetricId | null>(null);
     const createSocketRef = useRef(createSocket);
 
     useEffect(() => {
@@ -189,6 +192,18 @@ export const useRoomConnection = ({
         prevDeckRef.current = deckId;
     }, [state.room?.deckId]);
 
+    useEffect(() => {
+        const metric = state.room?.metric ?? null;
+        if (
+            metric &&
+            prevMetricRef.current &&
+            prevMetricRef.current !== metric
+        ) {
+            toast(`Showing ${metricLabel(metric)}`);
+        }
+        prevMetricRef.current = metric;
+    }, [state.room?.metric]);
+
     const wasReconnecting = useRef(false);
     useEffect(() => {
         if (state.connection === "reconnecting" && !wasReconnecting.current) {
@@ -217,6 +232,8 @@ export const useRoomConnection = ({
         },
         timer: (action) => send({ action, roomId }),
         changeDeck: (deckId) => send({ action: "changeDeck", roomId, deckId }),
+        changeMetric: (metric) =>
+            send({ action: "changeMetric", roomId, metric }),
         react: (emoji) => send({ action: "reaction", roomId, emoji }),
     };
 

@@ -1,4 +1,5 @@
 import { type DeckId, isDeckId } from "@/src/domain/deck";
+import { isMetricId, type MetricId } from "@/src/domain/metric";
 import type { TimerState } from "@/src/domain/timer";
 
 export const WS_URL =
@@ -26,13 +27,15 @@ export type ClientMessage =
     | { action: "resetRoom"; roomId: string }
     | { action: TimerActionName; roomId: string }
     | { action: "reaction"; roomId: string; emoji: string }
-    | { action: "changeDeck"; roomId: string; deckId: DeckId };
+    | { action: "changeDeck"; roomId: string; deckId: DeckId }
+    | { action: "changeMetric"; roomId: string; metric: MetricId };
 
 export type ErrorCode =
     | "invalid_message"
     | "not_in_room"
     | "invalid_card"
     | "unknown_deck"
+    | "unknown_metric"
     | "invalid_name"
     | "invalid_room_id"
     | "internal";
@@ -47,6 +50,7 @@ export interface SnapshotParticipant {
 export interface RoomSnapshot {
     id: string;
     deckId: DeckId;
+    metric: MetricId;
     phase: Phase;
     timer: TimerState;
     participants: SnapshotParticipant[];
@@ -99,6 +103,7 @@ const parseParticipant = (v: unknown): SnapshotParticipant | null => {
 
 const parseSnapshot = (v: unknown): RoomSnapshot | null => {
     if (!isRecord(v) || !isString(v.id) || !isDeckId(v.deckId)) return null;
+    if (!isMetricId(v.metric)) return null;
     if (v.phase !== "voting" && v.phase !== "revealed") return null;
     const timer = parseTimer(v.timer);
     if (!timer || !Array.isArray(v.participants)) return null;
@@ -107,6 +112,7 @@ const parseSnapshot = (v: unknown): RoomSnapshot | null => {
     return {
         id: v.id,
         deckId: v.deckId,
+        metric: v.metric,
         phase: v.phase,
         timer,
         participants: participants as SnapshotParticipant[],

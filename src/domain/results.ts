@@ -1,4 +1,5 @@
 import type { Deck } from "./deck";
+import type { MetricId } from "./metric";
 
 export interface VoteSummary {
     average: string | null;
@@ -54,4 +55,20 @@ export const summarize = (
         distinct.length === 1;
 
     return { average, mode, decision, consensus, counted: counted.length };
+};
+
+/**
+ * The one number the room reads off the results panel. `average` is `null` for
+ * an ordinal deck and the mode can be empty before anyone plays a countable
+ * card, so both fall back to a dash rather than to nothing at all.
+ */
+export const metricValue = (metric: MetricId, summary: VoteSummary): string => {
+    switch (metric) {
+        case "average":
+            return summary.average ?? "-";
+        case "mode":
+            return summary.mode.length ? summary.mode.join(", ") : "-";
+        case "decision":
+            return summary.decision;
+    }
 };

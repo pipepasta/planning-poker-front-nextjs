@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { getToasts } from "@/src/lib/toast";
 import { backoffDelay, useRoomConnection } from "@/src/room/useRoomConnection";
 
 const MAX_ATTEMPTS = 10;
@@ -41,20 +42,22 @@ class FakeSocket {
     }
 }
 
-const snapshotFrame = JSON.stringify({
-    type: "room",
-    serverTime: 1000,
-    room: {
-        id: "r1",
-        deckId: "fibonacci",
-        phase: "voting",
-        timer: { status: "paused", startedAt: null, accumulatedMs: 0 },
-        participants: [
-            { clientId: "me", name: "Me", hasVoted: false },
-            { clientId: "you", name: "You", hasVoted: true },
-        ],
-    },
-});
+const snapshotFrame = (metric = "decision") =>
+    JSON.stringify({
+        type: "room",
+        serverTime: 1000,
+        room: {
+            id: "r1",
+            deckId: "fibonacci",
+            metric,
+            phase: "voting",
+            timer: { status: "paused", startedAt: null, accumulatedMs: 0 },
+            participants: [
+                { clientId: "me", name: "Me", hasVoted: false },
+                { clientId: "you", name: "You", hasVoted: true },
+            ],
+        },
+    });
 
 /** Let the awaited getToken() promise inside connect() settle. */
 const flush = () => act(async () => {});
@@ -105,10 +108,31 @@ describe("useRoomConnection", () => {
         const { result } = mount();
         await flush();
         await act(async () => latest().open());
-        await act(async () => latest().emit(snapshotFrame));
+        await act(async () => latest().emit(snapshotFrame()));
 
         expect(result.current.state.room?.id).toBe("r1");
+        expect(result.current.state.room?.metric).toBe("decision");
         expect(result.current.state.room?.participants).toHaveLength(2);
+    });
+
+    it("sends changeMetric and toasts when the room's metric changes", async () => {
+        const { result } = mount();
+        await flush();
+        await act(async () => latest().open());
+        await act(async () => latest().emit(snapshotFrame()));
+
+        await act(async () => result.current.actions.changeMetric("mode"));
+        expect(JSON.parse(latest().sent.at(-1) as string)).toEqual({
+            action: "changeMetric",
+            roomId: "r1",
+            metric: "mode",
+        });
+
+        // The toast follows the server's snapshot, not the local click, so
+        // everyone in the room sees it.
+        expect(getToasts().map((t) => t.message)).not.toContain("Showing Mode");
+        await act(async () => latest().emit(snapshotFrame("mode")));
+        expect(getToasts().map((t) => t.message)).toContain("Showing Mode");
     });
 
     it("reconnects after a close with the first backoff delay", async () => {

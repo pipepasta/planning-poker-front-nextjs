@@ -12,6 +12,7 @@ const snapshot = {
     room: {
         id: "r1",
         deckId: "fibonacci",
+        metric: "decision",
         phase: "voting",
         timer: { status: "running", startedAt: 1, accumulatedMs: 0 },
         participants: [{ clientId: "a", name: "A", hasVoted: true }],
@@ -53,12 +54,36 @@ describe("parseServerMessage", () => {
         expect(
             parseServerMessage({
                 ...snapshot,
+                room: { ...snapshot.room, metric: "median" },
+            }),
+        ).toBeNull();
+        expect(
+            parseServerMessage({
+                ...snapshot,
+                room: { ...snapshot.room, metric: undefined },
+            }),
+        ).toBeNull();
+        expect(
+            parseServerMessage({
+                ...snapshot,
                 room: { ...snapshot.room, participants: [{ clientId: 1 }] },
             }),
         ).toBeNull();
         expect(
             parseServerMessage({ type: "reaction", emoji: "👍" }),
         ).toBeNull();
+    });
+});
+
+describe("parsed snapshots carry the room metric", () => {
+    it("keeps every metric the server can send", () => {
+        for (const metric of ["average", "mode", "decision"] as const) {
+            const parsed = parseServerMessage({
+                ...snapshot,
+                room: { ...snapshot.room, metric },
+            });
+            expect(parsed).toMatchObject({ room: { metric } });
+        }
     });
 });
 

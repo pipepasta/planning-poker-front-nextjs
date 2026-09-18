@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DECKS } from "@/src/domain/deck";
-import { summarize } from "@/src/domain/results";
+import { metricValue, summarize } from "@/src/domain/results";
 
 const fib = DECKS.fibonacci;
 const tee = DECKS.tshirt;
@@ -57,5 +57,28 @@ describe("summarize", () => {
         expect(summarize(fib, ["5", "5"]).consensus).toBe(true);
         expect(summarize(fib, ["5", "5", null]).consensus).toBe(false);
         expect(summarize(fib, ["5", "5", "skip"]).consensus).toBe(false);
+    });
+});
+
+describe("metricValue", () => {
+    it("reads the chosen statistic off a summary", () => {
+        const s = summarize(fib, ["3", "5", "5"]);
+        expect(metricValue("average", s)).toBe("4.3");
+        expect(metricValue("mode", s)).toBe("5");
+        expect(metricValue("decision", s)).toBe("5");
+    });
+
+    it("joins a tied mode", () => {
+        expect(metricValue("mode", summarize(fib, ["3", "5"]))).toBe("3, 5");
+    });
+
+    it("dashes an average the deck cannot have", () => {
+        const s = summarize(tee, ["M", "L"]);
+        expect(s.average).toBeNull();
+        expect(metricValue("average", s)).toBe("-");
+    });
+
+    it("dashes an empty mode", () => {
+        expect(metricValue("mode", summarize(fib, ["skip"]))).toBe("-");
     });
 });
