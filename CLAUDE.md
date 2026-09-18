@@ -27,7 +27,8 @@ This is a Next.js planning poker client application that connects to a WebSocket
 ### Project Structure
 - `src/domain/` - Pure domain logic shared in spirit with the server
   - `deck.ts` - Deck definitions. **Parity file**: it must stay equivalent to the server's `cdk/src/domain/deck.ts`. Both sides pin the card arrays in a test (`tests/domain/deck.test.ts` here), so a deck change has to be made deliberately in both repos or votes are silently rejected.
-  - `results.ts` - `summarize(deck, votes)` for average/mode/decision/consensus
+  - `metric.ts` - The room-wide result statistic (`average` / `mode` / `decision`, default `decision`), plus the `METRICS` list the picker renders. **Second parity file**: the id block must stay equivalent to the server's `cdk/src/domain/metric.ts`, and both sides pin the ids in a test (`tests/domain/metric.test.ts`), or the server rejects what the picker sends.
+  - `results.ts` - `summarize(deck, votes)` for average/mode/decision/consensus, and `metricValue(metric, summary)` for the one value the room is showing
   - `timer.ts` - `elapsedMs`, `formatDuration`
 - `src/protocol/` - `messages.ts` defines server/client message types, `parseServerMessage`, and the shared input limits (`ROOM_ID_MAX`, `NAME_MAX`, `isValidRoomId`). Components import those constants rather than re-declaring their own copies.
 - `src/room/` - WebSocket connection and room state
@@ -44,8 +45,8 @@ This is a Next.js planning poker client application that connects to a WebSocket
   - `cn.ts` - `cn()` class name helper
 - `src/components/` - Presentational components
   - `ui/` - Button, IconButton, Panel, Input, Dialog, Toaster, Skeleton, Spinner, Segmented
-  - `theme/` - ThemeProvider, ThemePicker
-  - `room/` - RoomHeader, TimerControl, DeckSwitcher, NameDialog, CopyLink, ResultsPanel, ParticipantsPanel, ParticipantCard, Hand, HandCard, ReactionBar, ReactionFloat, EmojiDialog, ConnectionBanner, RoomScreen
+  - `theme/` - ThemeProvider, ThemePicker, ThemeDialog
+  - `room/` - RoomHeader, TimerControl, RoomSettingsDialog, DeckSwitcher, MetricSwitcher, NameDialog, CopyLink, ResultsPanel, ParticipantsPanel, ParticipantCard, Hand, HandCard, ReactionBar, ReactionFloat, EmojiDialog, ConnectionBanner, RoomScreen
   - `home/HomeScreen.tsx`, `login/LoginForm.tsx` - Screens
 - `app/` - Routes: `layout.tsx`, `globals.css`, `page.tsx`, `login/{page.tsx,actions.ts}`, `rooms/[roomId]/page.tsx`
 - `proxy.ts` - Auth redirect
@@ -67,7 +68,11 @@ This is a Next.js planning poker client application that connects to a WebSocket
 The WebSocket endpoint is selected via `NEXT_PUBLIC_WS_URL` (default is the production AWS API Gateway WebSocket URL).
 
 ### Room Layout
-The room is a normally scrolling page (`min-h-dvh`) holding one centred vertical stack, `max-w-5xl`: sticky `RoomHeader`, `ConnectionBanner`, the results row (`average` / `mode` / `scrum decision` as three equal columns, spinners before the reveal), the `ParticipantsPanel` (the white card that anchors the screen, with the participant flip cards in a wrapping grid and the reaction floats positioned inside it), the `Reveal` / `Next Vote` buttons, the fanned `Hand`, then the `ReactionBar`. There is no fixed-height shell and nothing clips, so do not reintroduce `h-dvh overflow-hidden` or viewport-fraction heights. The hand's top padding still has to clear the fan's upward arc plus the selected card's rise, so `HandCard`'s tilt and lift stay capped (`MAX_TILT`, `MAX_LIFT`) and the row keeps `pt-10`.
+The room is a normally scrolling page (`min-h-dvh`) holding one centred vertical stack, `max-w-5xl`: sticky `RoomHeader`, `ConnectionBanner`, the `ResultsPanel`, the `ParticipantsPanel` (the white card that anchors the screen, with the participant flip cards in a wrapping grid and the reaction floats positioned inside it), the `Reveal` / `Next Vote` buttons, the fanned `Hand`, then the `ReactionBar`. There is no fixed-height shell and nothing clips, so do not reintroduce `h-dvh overflow-hidden` or viewport-fraction heights. The hand's top padding still has to clear the fan's upward arc plus the selected card's rise, so `HandCard`'s tilt and lift stay capped (`MAX_TILT`, `MAX_LIFT`) and the row keeps `pt-10`.
+
+`ResultsPanel` is one compact centred card, not a full-width band: the room shows a single statistic (the room's `metric`), as a small uppercase label above a large value, with the `Consensus!` pill beside that pair rather than stacked above it. Its height is fixed — the value line is `h-9` whether it holds the pending spinner, the value, or the value with the pill — so revealing and reaching consensus never move the participants panel. Measured: the card is 77px tall and the panel's top stays put in every state.
+
+**Header split, by who a setting affects.** The room's own settings (deck and metric) live behind the gear in `RoomSettingsDialog`, at every width. Personal settings stay out in the bar: `NameDialog` and `ThemeDialog`. So `RoomHeader` is one composition at every width — wordmark, copy link, timer, gear, name, theme — and it holds one row at 390px (measured: header 56px, content ending exactly on the 8px padding edge, no horizontal overflow). The 374px available there is why three things are compact below `sm`: the wordmark keeps its mark but drops its word (`Wordmark compact`), the name button drops its label (`NameDialog compact`), and the theme is one swatch that opens a dialog (`ThemeDialog`) rather than five inline swatches, which need 124px. `ThemePicker` itself is unchanged and still inline on the home and login pages.
 
 ### Theme System
 - Colours are HSL triples in CSS variables consumed as `hsl(var(--x))`: `--background`, `--foreground`, `--card`, `--popover`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring` and their `-foreground` pairs. `@theme inline` in `app/globals.css` maps each to a Tailwind colour utility.
