@@ -1,5 +1,6 @@
 "use client";
 import { ThemePicker } from "@/src/components/theme/ThemePicker";
+import { Wordmark } from "@/src/components/Wordmark";
 import type { DeckId } from "@/src/domain/deck";
 import type { TimerState } from "@/src/domain/timer";
 import type { TimerActionName } from "@/src/protocol/messages";
@@ -24,13 +25,10 @@ interface Props {
 // values for everything inside, so the controls need no variant of their own.
 export const RoomHeader = (p: Props) => (
     <header className="header-chrome sticky top-0 z-30 bg-header text-header-foreground">
-        <div className="mx-auto flex max-w-5xl items-center gap-x-3 px-3 py-2">
-            {/* The wordmark costs width a 390px header cannot spare. */}
-            <span className="hidden text-lg font-semibold sm:inline">
-                macaroni poker
-            </span>
+        <div className="mx-auto flex max-w-5xl items-center gap-x-1.5 px-2 py-2 sm:gap-x-3 sm:px-3">
+            <Wordmark />
             <CopyLink roomId={p.roomId} />
-            <div className="ml-auto flex items-center gap-x-3">
+            <div className="ml-auto flex items-center gap-x-1.5 sm:gap-x-3">
                 <TimerControl
                     timer={p.timer}
                     clockOffsetMs={p.clockOffsetMs}

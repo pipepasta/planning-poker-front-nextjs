@@ -6,6 +6,7 @@ import { ThemePicker } from "@/src/components/theme/ThemePicker";
 import { Button } from "@/src/components/ui/Button";
 import { Input } from "@/src/components/ui/Input";
 import { Panel } from "@/src/components/ui/Panel";
+import { Wordmark } from "@/src/components/Wordmark";
 import { useSession } from "@/src/lib/session";
 import { isValidRoomId, ROOM_ID_MAX } from "@/src/protocol/messages";
 
@@ -20,7 +21,7 @@ export const HomeScreen = () => {
     return (
         <div className="flex min-h-dvh flex-col">
             <header className="flex items-center justify-between gap-3 p-3">
-                <span className="text-lg font-semibold">macaroni poker</span>
+                <Wordmark />
                 <div className="flex items-center gap-3">
                     {session.status === "ready" && (
                         <NameDialog

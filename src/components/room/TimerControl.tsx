@@ -17,12 +17,13 @@ export const TimerControl = ({ timer, clockOffsetMs, onAction }: Props) => {
     return (
         <div className="flex items-center gap-1">
             <span
-                className="text-lg font-semibold tabular-nums"
+                className="text-base font-semibold tabular-nums sm:text-lg"
                 aria-live="off"
             >
                 {text}
             </span>
             <IconButton
+                className="size-8 sm:size-10"
                 label={paused ? "Resume timer" : "Pause timer"}
                 disabled={!timer}
                 onClick={() => onAction(paused ? "resumeTimer" : "pauseTimer")}
@@ -30,6 +31,7 @@ export const TimerControl = ({ timer, clockOffsetMs, onAction }: Props) => {
                 {paused ? <Play size={18} /> : <Pause size={18} />}
             </IconButton>
             <IconButton
+                className="size-8 sm:size-10"
                 label="Reset timer"
                 disabled={!timer}
                 onClick={() => onAction("resetTimer")}

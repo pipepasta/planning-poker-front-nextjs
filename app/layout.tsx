@@ -33,7 +33,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={inter.variable}>
+        // THEME_BOOTSTRAP adds data-theme before React hydrates, so the server
+        // markup and the client element differ by that one attribute. This
+        // suppresses the warning for <html>'s own attributes only; children
+        // are still checked normally.
+        <html lang="en" className={inter.variable} suppressHydrationWarning>
             <head>
                 {/* The server cannot see localStorage, so without this the first
                     paint always uses the default theme and then snaps to the
