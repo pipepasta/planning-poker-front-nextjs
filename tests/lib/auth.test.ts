@@ -1,0 +1,38 @@
+import { describe, expect, it } from "vitest";
+import { resolveRedirectTarget } from "@/src/lib/auth";
+
+describe("resolveRedirectTarget", () => {
+    it("keeps same-origin absolute paths", () => {
+        expect(resolveRedirectTarget("/rooms/abc?x=1")).toBe("/rooms/abc?x=1");
+        expect(resolveRedirectTarget("/")).toBe("/");
+    });
+
+    it("rejects protocol-relative and absolute URLs", () => {
+        expect(resolveRedirectTarget("//evil.com")).toBe("/");
+        expect(resolveRedirectTarget("https://evil.com")).toBe("/");
+        expect(resolveRedirectTarget(null)).toBe("/");
+        expect(resolveRedirectTarget("")).toBe("/");
+        expect(resolveRedirectTarget("rooms/abc")).toBe("/");
+    });
+
+    it("rejects hosts smuggled through dot-segment normalisation", () => {
+        expect(resolveRedirectTarget("/..//evil.com")).toBe("/");
+        expect(resolveRedirectTarget("/x/../..//evil.com")).toBe("/");
+        expect(resolveRedirectTarget("/../..//evil.com?a=1")).toBe("/");
+    });
+
+    it("preserves the fragment", () => {
+        expect(resolveRedirectTarget("/rooms/abc#seat")).toBe(
+            "/rooms/abc#seat",
+        );
+        expect(resolveRedirectTarget("/rooms/abc?x=1#seat")).toBe(
+            "/rooms/abc?x=1#seat",
+        );
+    });
+
+    it("rejects backslash-smuggled hosts", () => {
+        expect(resolveRedirectTarget("/\\evil.com")).toBe("/");
+        expect(resolveRedirectTarget("/\\/evil.com")).toBe("/");
+        expect(resolveRedirectTarget("/\\\\evil.com")).toBe("/");
+    });
+});

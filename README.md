@@ -5,7 +5,7 @@ online planning poker application hosted on https://macaroni-poker.vercel.app/
 
 
 
-A client of [planning poker server](https://github.com/macaroni10y/planning-poker-server) written in TypeScript, Next.js.
+A client of [planning poker server](https://github.com/pipepasta/planning-poker-server) written in TypeScript, Next.js.
 
 ## local development
 ```sh

@@ -1,118 +1,216 @@
 @import "tailwindcss";
 
-@config "../tailwind.config.js";
+/* Colours are HSL triples in CSS variables, consumed as hsl(var(--x)). One
+   shared set of formulas derives every token from the active theme's two hues,
+   so a theme is two numbers rather than a hand-written palette. */
+@theme inline {
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+    --color-background: hsl(var(--background));
+    --color-foreground: hsl(var(--foreground));
+    --color-card: hsl(var(--card));
+    --color-card-foreground: hsl(var(--card-foreground));
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
+    --color-border: hsl(var(--border));
+    --color-input: hsl(var(--input));
+    --color-ring: hsl(var(--ring));
+    --color-header: hsl(var(--header));
+    --color-header-foreground: hsl(var(--header-foreground));
+}
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+@theme {
+    --font-sans:
+        var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+        sans-serif;
+}
+
+:root {
+    --radius: 0.75rem;
+
+    /* Theme hues. --theme-h drives the tinted background and the pastels;
+       --theme-h-soft is the neighbouring hue the old palette used for the
+       muted/accent family. Overridden per theme below. */
+    --theme-h: 330;
+    --theme-h-soft: 340;
+
+    --background: var(--theme-h) 70% 97%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: var(--theme-h) 100% 90%;
+    --primary-foreground: var(--theme-h) 80% 10%;
+    --secondary: var(--theme-h) 100% 80%;
+    --secondary-foreground: var(--theme-h-soft) 50% 20%;
+    --muted: var(--theme-h-soft) 40% 85%;
+    /* The old palette had this at 10% 80% — lighter than --muted itself and
+       unreadable on a white card. Darkened until it clears 4.5:1 on --card. */
+    --muted-foreground: var(--theme-h-soft) 15% 38%;
+    --accent: var(--theme-h-soft) 50% 90%;
+    --accent-foreground: var(--theme-h-soft) 50% 20%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    /* The old ring was a 60% grey: about 2.6:1 on white, under the 3:1 a
+       focus indicator needs. Themed and darkened instead. */
+    --ring: var(--theme-h) 60% 45%;
+
+    /* The chrome bar. A deep, low-saturation cut of the same hue: it puts a
+       real value step between the chrome and the white panels under it, and
+       it is the one surface where the theme colour shows at strength. */
+    --header: var(--theme-h) 25% 20%;
+    --header-foreground: var(--theme-h) 15% 97%;
+}
+
+[data-theme="pink"] {
+    --theme-h: 330;
+    --theme-h-soft: 340;
+}
+[data-theme="blue"] {
+    --theme-h: 210;
+    --theme-h-soft: 220;
+}
+[data-theme="green"] {
+    --theme-h: 120;
+    --theme-h-soft: 130;
+}
+[data-theme="purple"] {
+    --theme-h: 270;
+    --theme-h-soft: 280;
+}
+[data-theme="orange"] {
+    --theme-h: 30;
+    --theme-h-soft: 40;
+}
+
 @layer base {
+    /* Tailwind v4 defaults every border to currentColor; the design wants the
+       hairline token unless a component says otherwise. */
     *,
     ::after,
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentcolor);
+        border-color: hsl(var(--border));
+    }
+    html {
+        color-scheme: light;
+    }
+    body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+    button {
+        cursor: pointer;
+    }
+    /* Everything sitting on the dark chrome bar keeps reading the ordinary
+       tokens; only their values change inside it. Custom properties inherit
+       regardless of layer, so this needs no specificity fight with the
+       utilities and no component needs a dark-specific variant. --primary is
+       deliberately left alone, so a selected segment stays pastel. */
+    .header-chrome {
+        --background: var(--header);
+        --foreground: var(--header-foreground);
+        --card: var(--theme-h) 22% 26%;
+        --card-foreground: var(--header-foreground);
+        --muted-foreground: var(--theme-h) 15% 78%;
+        --accent: var(--theme-h) 20% 32%;
+        --accent-foreground: 0 0% 98%;
+        --border: var(--theme-h) 15% 45%;
+        --input: var(--theme-h) 15% 45%;
+        --ring: var(--theme-h) 60% 80%;
+    }
+    /* One focus ring for the whole app, never the UA blue. Zero specificity,
+       so a component can still opt out. */
+    :where(
+            a,
+            button,
+            input,
+            select,
+            textarea,
+            [tabindex]:not([tabindex="-1"])
+        ):focus-visible {
+        outline: 2px solid hsl(var(--ring));
+        outline-offset: 2px;
     }
 }
 
 @layer utilities {
-    @keyframes floatUp {
+    .flip {
+        transform-style: preserve-3d;
+        transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .flip.is-flipped {
+        transform: rotateY(180deg);
+    }
+    .face {
+        backface-visibility: hidden;
+    }
+    .face-back {
+        transform: rotateY(180deg);
+    }
+    /* Each reaction is placed at its own random point by the component; this
+       only carries it upward. --float-dy is how far it travels. */
+    @keyframes float-up {
         0% {
-            opacity: 1;
-            transform: translateY(80px);
+            opacity: 0;
+            transform: translate(-50%, 0) scale(0.6);
         }
-        10% {
-            transform: translateY(50px);
+        15% {
+            opacity: 1;
+            transform: translate(-50%, -12px) scale(1.05);
         }
         80% {
-            opacity: 0.8;
+            opacity: 1;
         }
         100% {
             opacity: 0;
+            transform: translate(-50%, var(--float-dy, -120px)) scale(1);
         }
     }
-
-    .emoji-animation {
-        animation: floatUp 1.5s ease-out forwards;
+    .float-up {
+        animation: float-up 2.5s ease-out forwards;
     }
-
-    /* Flip card 3D transform utilities */
-    .flip-card-container {
-        perspective: 1000px;
+    @keyframes pop-in {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
-
-    .flip-card-inner {
-        transform-style: preserve-3d;
-        transition: transform 0.6s ease-in-out;
+    .pop-in {
+        animation: pop-in 250ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
-
-    .flip-card-inner.flipped {
-        transform: rotateY(180deg);
-    }
-
-    .flip-card-face {
-        backface-visibility: hidden;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-
-    .flip-card-front {
-        transform: rotateY(0deg);
-    }
-
-    .flip-card-back {
-        transform: rotateY(180deg);
-    }
-
-    /* Reduced motion support */
     @media (prefers-reduced-motion: reduce) {
-        .flip-card-inner {
+        .flip,
+        .float-up,
+        .pop-in {
+            animation: none;
             transition: none;
         }
-    }
-}
-
-@layer base {
-    :root {
-        /* Default pink theme variables as fallback during initial load */
-        --background: 330 70% 97%;
-        --foreground: 240 10% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 240 10% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 3.9%;
-        --primary: 333 100% 90%;
-        --primary-foreground: 333 80% 10%;
-        --secondary: 330 100% 80%;
-        --secondary-foreground: 340 50% 20%;
-        --muted: 340 40% 85%;
-        --muted-foreground: 333 10% 80%;
-        --accent: 340 50% 90%;
-        --accent-foreground: 340 50% 20%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 90%;
-        --input: 0 0% 90%;
-        --ring: 0 0% 60%;
-        --radius: 0.75rem;
-        --chart-1: 330 100% 60%;
-        --chart-2: 340 80% 65%;
-        --chart-3: 350 70% 60%;
-        --chart-4: 10 90% 75%;
-        --chart-5: 20 85% 65%;
-    }
-}
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
+        .animate-pulse,
+        .animate-spin {
+            animation: none;
+        }
     }
 }
