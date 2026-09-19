@@ -28,7 +28,10 @@ export const ThemePicker = () => {
                     aria-label={`${t.label} theme`}
                     onClick={() => setTheme(t.id)}
                     className={cn(
-                        "size-5 rounded-full border border-border transition-transform hover:scale-110",
+                        // The swatch stays 20px, but the pseudo-element gives
+                        // it a 28px touch target without taking any more room
+                        // in the bar.
+                        "relative size-5 rounded-full border border-border transition-transform after:absolute after:-inset-1 after:content-[''] hover:scale-110",
                         selected === t.id &&
                             "ring-2 ring-ring ring-offset-2 ring-offset-background",
                     )}
