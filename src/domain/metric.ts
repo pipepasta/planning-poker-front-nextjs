@@ -22,7 +22,10 @@ export interface Metric {
 export const METRICS: readonly Metric[] = [
     { id: "average", label: "Average" },
     { id: "mode", label: "Mode" },
-    { id: "decision", label: "Decision" },
+    // The wire id stays `decision` — it is room state the server validates and
+    // old rooms carry — but the team calls this the scrum result, so that is
+    // what the room says.
+    { id: "decision", label: "Scrum" },
 ];
 
 export const metricLabel = (id: MetricId): string =>

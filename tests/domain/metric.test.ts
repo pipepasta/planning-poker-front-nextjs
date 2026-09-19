@@ -37,7 +37,7 @@ describe("metric definitions (server parity)", () => {
         expect(METRICS.map((m) => m.label)).toEqual([
             "Average",
             "Mode",
-            "Decision",
+            "Scrum",
         ]);
         expect(metricLabel("mode")).toBe("Mode");
     });
