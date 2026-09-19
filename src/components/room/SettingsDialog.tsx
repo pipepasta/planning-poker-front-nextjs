@@ -64,7 +64,10 @@ export const SettingsDialog = ({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <IconButton label="Settings" className={className}>
+                <IconButton
+                    label="Settings"
+                    className={cn("size-8 sm:size-10", className)}
+                >
                     <Settings size={18} />
                 </IconButton>
             </DialogTrigger>

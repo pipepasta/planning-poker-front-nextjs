@@ -19,7 +19,7 @@ export const AppHeader = ({ children }: { children?: ReactNode }) => (
         {/* min-h-14 is the bar's height wherever a page has no 40px control
             to set it — login, which carries only the swatches — so all three
             bars stand the same 56px tall. */}
-        <div className="mx-auto flex min-h-14 max-w-5xl flex-wrap items-center gap-x-1.5 px-2 py-2 sm:gap-x-3 sm:px-3">
+        <div className="mx-auto flex min-h-14 max-w-5xl flex-wrap items-center gap-x-1 px-2 py-2 sm:gap-x-3 sm:px-3">
             <Wordmark />
             {children}
         </div>

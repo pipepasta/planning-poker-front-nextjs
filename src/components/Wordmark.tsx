@@ -13,7 +13,7 @@ export const Wordmark = ({ className }: { className?: string }) => (
         href="/"
         aria-label="macaroni poker, back to home"
         className={cn(
-            "flex shrink-0 items-center gap-1.5 rounded-lg transition-opacity hover:opacity-80 sm:gap-2",
+            "flex shrink-0 items-center gap-1 rounded-lg transition-opacity hover:opacity-80 sm:gap-2",
             className,
         )}
     >
@@ -24,7 +24,7 @@ export const Wordmark = ({ className }: { className?: string }) => (
             height={24}
             className="size-5 rounded shadow-sm sm:size-6"
         />
-        <span className="whitespace-nowrap text-base font-semibold sm:text-lg">
+        <span className="whitespace-nowrap text-sm font-semibold sm:text-lg">
             macaroni poker
         </span>
     </Link>

@@ -33,7 +33,7 @@ interface Props {
 export const RoomHeader = (p: Props) => (
     <AppHeader>
         <CopyLink roomId={p.roomId} />
-        <div className="ml-auto flex items-center gap-x-1.5 sm:gap-x-3">
+        <div className="ml-auto flex items-center gap-x-1 sm:gap-x-3">
             <TimerControl
                 timer={p.timer}
                 clockOffsetMs={p.clockOffsetMs}
