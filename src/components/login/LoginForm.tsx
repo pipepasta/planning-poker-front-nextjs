@@ -13,12 +13,14 @@ export const LoginForm = () => {
     });
     const next = useSearchParams().get("next");
     return (
-        <Panel className="w-full max-w-sm p-6">
+        <Panel className="w-full max-w-sm p-5 sm:p-6">
+            {/* The bar above already says the name, so the card says what to
+                do here instead of repeating it. */}
             <h1 className="mb-1 text-center text-2xl font-semibold">
-                macaroni poker
+                Pull up a chair
             </h1>
             <p className="mb-5 text-center text-sm text-muted-foreground">
-                Pick a nickname and pull up a chair.
+                Pick a nickname and join the table.
             </p>
             <form action={action} className="flex flex-col gap-2">
                 {next && <input type="hidden" name="next" value={next} />}

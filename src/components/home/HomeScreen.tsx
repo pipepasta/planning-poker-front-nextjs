@@ -1,12 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AppHeader } from "@/src/components/AppHeader";
+import { PersonalSettingsDialog } from "@/src/components/PersonalSettings";
 import { NameDialog } from "@/src/components/room/NameDialog";
 import { ThemePicker } from "@/src/components/theme/ThemePicker";
 import { Button } from "@/src/components/ui/Button";
 import { Input } from "@/src/components/ui/Input";
 import { Panel } from "@/src/components/ui/Panel";
-import { Wordmark } from "@/src/components/Wordmark";
 import { useSession } from "@/src/lib/session";
 import { isValidRoomId, ROOM_ID_MAX } from "@/src/protocol/messages";
 
@@ -20,20 +21,30 @@ export const HomeScreen = () => {
 
     return (
         <div className="flex min-h-dvh flex-col">
-            <header className="flex items-center justify-between gap-3 p-3">
-                <Wordmark />
-                <div className="flex items-center gap-3">
-                    {session.status === "ready" && (
-                        <NameDialog
+            {/* Home carries only the personal controls, so they sit out in the
+                bar from `sm` up — where the name, the five swatches and a whole
+                wordmark stop fighting over 390px — and fold behind the same
+                gear the room uses below that. */}
+            <AppHeader>
+                {session.status === "ready" && (
+                    <div className="ml-auto flex items-center gap-x-1.5 sm:gap-x-3">
+                        <PersonalSettingsDialog
+                            className="sm:hidden"
                             name={session.displayName}
                             onSave={session.rename}
                         />
-                    )}
-                    <ThemePicker />
-                </div>
-            </header>
+                        <div className="hidden items-center gap-x-3 sm:flex">
+                            <NameDialog
+                                name={session.displayName}
+                                onSave={session.rename}
+                            />
+                            <ThemePicker />
+                        </div>
+                    </div>
+                )}
+            </AppHeader>
             <main className="flex flex-1 items-center justify-center p-4">
-                <Panel className="w-full max-w-sm p-6">
+                <Panel className="w-full max-w-sm p-5 sm:p-6">
                     <h1 className="mb-5 text-center text-2xl font-semibold">
                         Join a table
                     </h1>
@@ -44,7 +55,12 @@ export const HomeScreen = () => {
                             if (valid) enter(roomId);
                         }}
                     >
+                        {/* An input's intrinsic width is about twenty
+                            characters, which is wider than the panel at 320px:
+                            without min-w-0 the row would push the button out
+                            of the card rather than shrink. */}
                         <Input
+                            className="min-w-0"
                             aria-label="Room ID"
                             placeholder="Room ID"
                             maxLength={ROOM_ID_MAX}
@@ -52,7 +68,12 @@ export const HomeScreen = () => {
                             onChange={(e) => setRoomId(e.target.value)}
                             invalid={roomId.length > 0 && !valid}
                         />
-                        <Button type="submit" disabled={!valid} size="lg">
+                        <Button
+                            type="submit"
+                            disabled={!valid}
+                            size="lg"
+                            className="shrink-0"
+                        >
                             Join
                         </Button>
                     </form>

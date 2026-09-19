@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { AppHeader } from "@/src/components/AppHeader";
 import { LoginForm } from "@/src/components/login/LoginForm";
 import { ThemePicker } from "@/src/components/theme/ThemePicker";
-import { Wordmark } from "@/src/components/Wordmark";
 
 export const metadata: Metadata = { title: "Sign in" };
 
+// Nobody is signed in yet, so the bar carries the one setting that exists
+// before a name does: the theme.
 const Page = () => (
     <div className="flex min-h-dvh flex-col">
-        <header className="flex items-center justify-between gap-3 p-3">
-            <Wordmark />
-            <ThemePicker />
-        </header>
+        <AppHeader>
+            <div className="ml-auto flex items-center">
+                <ThemePicker />
+            </div>
+        </AppHeader>
         <main className="flex flex-1 items-center justify-center p-4">
             <Suspense>
                 <LoginForm />
