@@ -15,7 +15,7 @@ export const ThemePicker = () => {
     return (
         <div
             role="radiogroup"
-            aria-label="Theme colour"
+            aria-label="Theme color"
             className="flex items-center gap-1.5"
         >
             {THEMES.map((t) => (

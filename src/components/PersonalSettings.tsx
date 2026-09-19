@@ -48,7 +48,7 @@ export const PersonalFields = ({
         <Field label="Your name">
             {open && <NameForm name={name} onSave={onSave} onSaved={onSaved} />}
         </Field>
-        <Field label="Theme colour">
+        <Field label="Theme color">
             <ThemePicker />
         </Field>
     </>
